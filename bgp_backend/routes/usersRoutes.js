@@ -50,7 +50,39 @@ router.post('/createUser', async (req, res) => {
 
     const token = jwt.sign({ userId: user._id, username: user.username }, "pruebas");
 
-    // Guardar el token en el esquema de Token
+    res.status(201).send({ mensaje: 'Usuario creado correctamente', token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al crear el usuario');
+  }
+});
+
+// Endpoint de Login (email o username)
+router.post('/login', async (req, res) => {
+  const { emailOrUsername, password } = req.body;
+
+  // Verifica si ambos campos están presentes
+  if (!emailOrUsername || !password) {
+    return res.status(400).send('Por favor, proporciona email o username y contraseña');
+  }
+
+  try {
+    // Busca al usuario por su email o username
+    const user = await Users.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
+    if (!user) {
+      return res.status(400).send('Email/Username o contraseña incorrectos');
+    }
+
+    // Compara la contraseña proporcionada con la almacenada en la base de datos
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).send('Email/Username o contraseña incorrectos');
+    }
+
+    // Genera un token JWT si las credenciales son correctas
+    const token = jwt.sign({ userId: user._id, username: user.username },"pruebas");
+
+    // Guarda el token en el esquema de Token
     const tokenDocument = new Token({
       token,
       userId: user._id,
@@ -58,12 +90,13 @@ router.post('/createUser', async (req, res) => {
 
     await tokenDocument.save();
 
-    res.status(201).send({ mensaje: 'Usuario creado correctamente', token });
+    res.status(200).send({ mensaje: 'Inicio de sesión exitoso', token });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al crear el usuario');
+    res.status(500).send('Error al iniciar sesión');
   }
 });
+
 
 
 // Elimina un usuario específico por username 
