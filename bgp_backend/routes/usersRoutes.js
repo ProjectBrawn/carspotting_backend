@@ -59,6 +59,7 @@ router.post('/createUser', async (req, res) => {
 
 // Endpoint de Login (email o username)
 router.post('/login', async (req, res) => {
+  console.log("Me meto al login")
   const { emailOrUsername, password } = req.body;
 
   // Verifica si ambos campos están presentes
@@ -70,13 +71,13 @@ router.post('/login', async (req, res) => {
     // Busca al usuario por su email o username
     const user = await Users.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
     if (!user) {
-      return res.status(400).send('Email/Username o contraseña incorrectos');
+      return res.status(400).send({ status: 'failed', token:"" });
     }
 
     // Compara la contraseña proporcionada con la almacenada en la base de datos
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(400).send('Email/Username o contraseña incorrectos');
+      return res.status(400).send({ status: 'failed', token:"" });
     }
 
     // Genera un token JWT si las credenciales son correctas
@@ -90,10 +91,10 @@ router.post('/login', async (req, res) => {
 
     await tokenDocument.save();
 
-    res.status(200).send({ mensaje: 'Inicio de sesión exitoso', token });
+    res.status(200).send({ status: 'success', token });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al iniciar sesión');
+    return res.status(500).send({ status: 'failed', token:"" });
   }
 });
 
