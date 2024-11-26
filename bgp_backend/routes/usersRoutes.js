@@ -18,18 +18,18 @@ router.get('/:username', autenticarToken, async (req, res) => {
 });
 
 router.post('/createUser', async (req, res) => {
-  const { nombre, apellido, email, password, fechaNacimiento, biografia, foto, username } = req.body;
+  const { nombre, apellidos, username, email, password } = req.body;
 
   // Validaciones básicas
-  if (!nombre || !apellido || !email || !password || !username) {
-    return res.status(400).send('Todos los campos obligatorios deben completarse');
+  if (!nombre || !apellidos || !email || !password || !username) {
+    return res.status(400).send({ status: 'failed', message:"Todos campos deben ser completados" });
   }
 
   try {
     // Verificar si el email o el username ya existen en la base de datos
     const existingUser = await Users.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res.status(400).send('El usuario o email ya están en uso');
+      return res.status(400).send({ status: 'failed', message:"El email o el username ya están en uso" });
     }
 
     // Encriptar la contraseña antes de guardar
@@ -38,22 +38,19 @@ router.post('/createUser', async (req, res) => {
     // Crear el usuario
     const user = new Users({
       nombre,
-      apellido,
+      apellidos,
+      username,
       email,
       password: hashedPassword,
-      biografia,
-      foto,
-      username,
     });
+    
 
     await user.save();
 
-    const token = jwt.sign({ userId: user._id, username: user.username }, "pruebas");
-
-    res.status(201).send({ mensaje: 'Usuario creado correctamente', token });
+    res.status(200).send({ status: 'success', message:"Usuario creado correctamente" });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al crear el usuario');
+    res.status(500).send({ status: 'failed', message:"Error al crear usuario" });
   }
 });
 
