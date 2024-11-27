@@ -26,7 +26,7 @@ const cocheSchema = new mongoose.Schema({
         type: String, 
         default: '' 
     },
-    openai_pid: { 
+    openai_pid: { // creo que se refiere a un id artificail sinmas, pero se lo ha puesto asi
         type: String 
     },
     imagen: { 
