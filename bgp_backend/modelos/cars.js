@@ -1,29 +1,61 @@
 const mongoose = require('mongoose');
 
-const carSchema = new mongoose.Schema({
-    marca: {
-        type: String,
+// Modelo de Coche
+const cocheSchema = new mongoose.Schema({
+    marca: { 
+        type: String, 
+        required: true 
+    },
+    modelo: { 
+        type: String, 
+        required: true 
+    },
+    año: { 
+        type: Number, 
+        required: true 
+    },
+    generacion: { 
+        type: String 
+    },
+    ubicacion: {
+        latitud: Number,
+        longitud: Number,
+        direccion: String
+    },
+    descripcion: { 
+        type: String, 
+        default: '' 
+    },
+    openai_pid: { 
+        type: String 
+    },
+    imagen: { 
+        type: String, 
+        required: true 
+    },
+    usuario_captura: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
-    modelo: {
-        type: String,
-        required: true
-    },
-    generacion: {
-        type: String,
-        required: true
-    },
-    año: {
-        type: Number,
-        required: true
-    },
-    url_imagen: {
-        type: String,
-        required: false // Campo opcional
-    },
-    tipoCarroceria: {
-        type: String,
-        required: false // Campo opcional
+    medallas: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Medalla'
+    }],
+    comentarios: [{
+        usuario: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        texto: String,
+        fecha: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    fecha_captura: {
+        type: Date,
+        default: Date.now
     }
 });
 
