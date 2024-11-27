@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Modelo de Coche
-const cocheSchema = new mongoose.Schema({
+const carSchema = new mongoose.Schema({
     marca: { 
         type: String, 
         required: true 
