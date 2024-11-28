@@ -13,8 +13,14 @@ router.get('/',autenticarToken, async (req, res) => {
 
 // Obtén un usuario específico por username 
 router.get('/:username', autenticarToken, async (req, res) => {
-  const user = await Users.findById(req.params.username);
-  res.send(user);
+  console.log("entro aqui")
+  console.log("Voy a buscar a ", req.params.username)
+  const user = await Users.findOne({ username: req.params.username });
+  if (!user) {
+    return res.status(404).send('Usuario no encontrado');
+  }else{
+    return res.status(200).send(user);
+  }
 });
 
 router.post('/createUser', async (req, res) => {
@@ -94,8 +100,6 @@ router.post('/login', async (req, res) => {
     return res.status(500).send({ status: 'failed', token:"" });
   }
 });
-
-
 
 // Elimina un usuario específico por username 
 router.delete('/:username', autenticarToken, async (req, res) => {

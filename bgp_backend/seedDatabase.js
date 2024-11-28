@@ -13,7 +13,7 @@ const hashPassword = async (password) => {
 async function seedDatabase() {
     try {
         // Conexión a la base de datos (ajusta la URL según tu configuración)
-        await mongoose.connect('mongodb://localhost:27017/brawngpapp', {
+        await mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp', {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
