@@ -20,4 +20,4 @@ const medallaSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('medallaSchema', medallaSchema);
+module.exports = mongoose.model('Medalla', medallaSchema);

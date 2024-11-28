@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const db = require('./config/db');
 const usersRoutes = require('./routes/usersRoutes');
 const carsRoutes = require('./routes/carsRoutes');
+const feedRoutes = require('./routes/feedRoutes');
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/users', usersRoutes);
 app.use('/cars', carsRoutes);
+app.use('/feed', feedRoutes);
 
 
 app.listen(3000, () => {
