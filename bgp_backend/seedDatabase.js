@@ -92,7 +92,7 @@ async function seedDatabase() {
                     longitud: -74.0060,
                     direccion: 'New York, NY'
                 },
-                imagen: 'https://example.com/supra.jpg',
+                imagen: 'https://m.media-amazon.com/images/I/71-I1pj+7KL._AC_SL1500_.jpg',
                 usuario_captura: usuarios[0]._id,
                 medallas: [medallas[0]._id],
                 comentarios: [
@@ -112,7 +112,7 @@ async function seedDatabase() {
                     longitud: 139.6503,
                     direccion: 'Tokyo, Japan'
                 },
-                imagen: 'https://example.com/gtr.jpg',
+                imagen: 'https://spots.ag/2021/08/25/nissan-skyline-r34-gt-r-c945525082021233910_1.jpg?1629927579',
                 usuario_captura: usuarios[1]._id,
                 medallas: [medallas[1]._id],
                 comentarios: [
@@ -132,7 +132,7 @@ async function seedDatabase() {
                     longitud: -118.2437,
                     direccion: 'Los Angeles, CA'
                 },
-                imagen: 'https://example.com/rx7.jpg',
+                imagen: 'https://www.ocasionplus.com/wp-content/uploads/2023/04/Mazda-RX-7-1.jpg',
                 usuario_captura: usuarios[2]._id,
                 comentarios: [
                     {
