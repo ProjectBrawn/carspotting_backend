@@ -8,8 +8,7 @@ router.get('/:user', autenticarToken, async (req, res) => {
     // Extraer el nombre de usuario desde los parámetros de consulta
     const  username  = req.params.user;
     // const usuarioId = req.user.userId; // ID del usuario autenticado extraído del token (opcional)
-    console.log("user");
-    console.log(username);
+
 
     // Extraer la fecha límite y el límite desde los parámetros de consulta
     const { fechaLimite, limite } = req.query;

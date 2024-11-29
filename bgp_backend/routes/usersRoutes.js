@@ -13,13 +13,54 @@ router.get('/',autenticarToken, async (req, res) => {
 
 // Obtén un usuario específico por username 
 router.get('/:username', autenticarToken, async (req, res) => {
-  console.log("entro aqui")
-  console.log("Voy a buscar a ", req.params.username)
   const user = await Users.findOne({ username: req.params.username });
   if (!user) {
     return res.status(404).send('Usuario no encontrado');
   }else{
     return res.status(200).send(user);
+  }
+});
+
+//Actualizar info de un usuario
+router.put('/:username', autenticarToken, async (req, res) => {
+  const { username: newUsername, descripcion } = req.body;
+
+  try {
+    // Buscar el usuario por el parámetro de ruta
+    const user = await Users.findOne({ username: req.params.username });
+
+    if (!user) {
+      return res.status(404).send('Usuario no encontrado');
+    }
+
+    // Validar bio y username
+    if (descripcion && typeof descripcion !== 'string') {
+      return res.status(400).send('La bio debe ser un texto válido.');
+    }
+
+    if (newUsername && typeof newUsername !== 'string') {
+      return res.status(400).send('El nombre de usuario debe ser un texto válido.');
+    }
+
+    // Verificar si el nuevo username ya está en uso
+    if (newUsername && newUsername !== user.username) {
+      const existingUser = await Users.findOne({ username: newUsername });
+      if (existingUser) {
+        return res.status(400).send('El nombre de usuario ya está en uso.');
+      }
+    }
+
+    // Actualizar los campos
+    if (descripcion) user.descripcion = descripcion;
+    if (newUsername) user.username = newUsername;
+
+    // Guardar los cambios
+    await user.save();
+
+    res.send(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error interno del servidor');
   }
 });
 
@@ -62,7 +103,6 @@ router.post('/createUser', async (req, res) => {
 
 // Endpoint de Login (email o username)
 router.post('/login', async (req, res) => {
-  console.log("Me meto al login")
   const { emailOrUsername, password } = req.body;
 
   // Verifica si ambos campos están presentes
