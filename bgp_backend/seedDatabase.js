@@ -94,6 +94,7 @@ async function seedDatabase() {
                 },
                 imagen: 'https://m.media-amazon.com/images/I/71-I1pj+7KL._AC_SL1500_.jpg',
                 usuario_captura: usuarios[0]._id,
+                usuario_name: usuarios[0].username,
                 medallas: [medallas[0]._id],
                 comentarios: [
                     {
@@ -114,6 +115,7 @@ async function seedDatabase() {
                 },
                 imagen: 'https://spots.ag/2021/08/25/nissan-skyline-r34-gt-r-c945525082021233910_1.jpg?1629927579',
                 usuario_captura: usuarios[1]._id,
+                usuario_name: usuarios[1].username,
                 medallas: [medallas[1]._id],
                 comentarios: [
                     {
@@ -134,6 +136,7 @@ async function seedDatabase() {
                 },
                 imagen: 'https://www.ocasionplus.com/wp-content/uploads/2023/04/Mazda-RX-7-1.jpg',
                 usuario_captura: usuarios[2]._id,
+                usuario_name: usuarios[2].username,
                 comentarios: [
                     {
                         usuario: usuarios[0]._id,

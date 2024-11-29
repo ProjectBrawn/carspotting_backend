@@ -38,6 +38,11 @@ const carSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    usuario_name: {
+        type: String,
+        ref: 'User',
+        required: true
+    },
     medallas: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Medalla'
