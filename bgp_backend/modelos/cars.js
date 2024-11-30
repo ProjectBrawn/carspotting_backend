@@ -38,6 +38,11 @@ const carSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    usuario_imagen: {
+        type: String,
+        ref: 'User',
+        required: true
+    },
     usuario_name: {
         type: String,
         ref: 'User',
@@ -56,7 +61,14 @@ const carSchema = new mongoose.Schema({
         fecha: {
             type: Date,
             default: Date.now
-        }
+        },
+        username: {
+            type: String,
+            ref: 'User'
+        },
+        usuario_imagen: { 
+            type: String, 
+        },
     }],
     fecha_captura: {
         type: Date,

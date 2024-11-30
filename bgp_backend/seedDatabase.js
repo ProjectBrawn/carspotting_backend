@@ -92,13 +92,16 @@ async function seedDatabase() {
                     longitud: -74.0060,
                     direccion: 'New York, NY'
                 },
-                imagen: 'https://m.media-amazon.com/images/I/71-I1pj+7KL._AC_SL1500_.jpg',
+                imagen: 'https://pbs.twimg.com/media/EbbZkhZWAAAa8iC.jpg:large',
                 usuario_captura: usuarios[0]._id,
                 usuario_name: usuarios[0].username,
+                usuario_imagen: usuarios[0].fotoPerfil,
                 medallas: [medallas[0]._id],
                 comentarios: [
                     {
-                        usuario: usuarios[1]._id,
+                        usuario_captura: usuarios[1]._id,
+                        usuario_name: usuarios[1].username,
+                        usuario_imagen: usuarios[1].fotoPerfil,
                         texto: '¡Qué máquina!'
                     }
                 ]
@@ -113,13 +116,16 @@ async function seedDatabase() {
                     longitud: 139.6503,
                     direccion: 'Tokyo, Japan'
                 },
-                imagen: 'https://spots.ag/2021/08/25/nissan-skyline-r34-gt-r-c945525082021233910_1.jpg?1629927579',
+                imagen: 'http://www.jmautomocion.com/pics_fotosproductos/1495/big_full_1.jpg',
                 usuario_captura: usuarios[1]._id,
                 usuario_name: usuarios[1].username,
+                usuario_imagen: usuarios[1].fotoPerfil,
                 medallas: [medallas[1]._id],
                 comentarios: [
                     {
-                        usuario: usuarios[0]._id,
+                        usuario_captura: usuarios[0]._id,
+                        usuario_name: usuarios[0].username,
+                        usuario_imagen: usuarios[0].fotoPerfil,
                         texto: 'Legendario!'
                     }
                 ]
@@ -134,12 +140,15 @@ async function seedDatabase() {
                     longitud: -118.2437,
                     direccion: 'Los Angeles, CA'
                 },
-                imagen: 'https://www.ocasionplus.com/wp-content/uploads/2023/04/Mazda-RX-7-1.jpg',
+                imagen: 'https://i.ytimg.com/vi/nn9t_NaH2vo/maxresdefault.jpg',
                 usuario_captura: usuarios[2]._id,
                 usuario_name: usuarios[2].username,
+                usuario_imagen: usuarios[2].fotoPerfil,
                 comentarios: [
                     {
-                        usuario: usuarios[0]._id,
+                        usuario_captura: usuarios[0]._id,
+                        usuario_name: usuarios[0].username,
+                        usuario_imagen: usuarios[0].fotoPerfil,
                         texto: 'Motor rotativo increíble'
                     }
                 ]
