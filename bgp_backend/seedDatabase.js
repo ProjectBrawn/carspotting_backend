@@ -25,15 +25,15 @@ async function seedDatabase() {
 
         // Crear algunas medallas de ejemplo
         const medallas = await Medalla.create([
-            { 
-                nombre: 'Primer Spoteo', 
-                descripcion: 'Primera foto de coche capturada', 
-                puntos: 10 
+            {
+                nombre: 'Primer Spoteo',
+                descripcion: 'Primera foto de coche capturada',
+                puntos: 10
             },
-            { 
-                nombre: 'Coleccionista', 
-                descripcion: 'Captura 10 coches diferentes', 
-                puntos: 50 
+            {
+                nombre: 'Coleccionista',
+                descripcion: 'Captura 10 coches diferentes',
+                puntos: 50
             }
         ]);
 
@@ -48,7 +48,7 @@ async function seedDatabase() {
                 descripcion: 'Amante de los coches clásicos',
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg',
                 puntos_experiencia: 0,
-                garaje_principal:[]
+                garaje_principal: []
             },
             {
                 nombre: 'María López',
@@ -59,7 +59,7 @@ async function seedDatabase() {
                 descripcion: 'Fan de los deportivos',
                 fotoPerfil: 'https://randomuser.me/api/portraits/women/1.jpg',
                 puntos_experiencia: 0,
-                garaje_principal:[]
+                garaje_principal: []
             },
             {
                 nombre: 'Carlos Ruiz',
@@ -70,7 +70,7 @@ async function seedDatabase() {
                 descripcion: 'Coleccionista de autos japoneses',
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/2.jpg',
                 puntos_experiencia: 0,
-                garaje_principal:[]
+                garaje_principal: []
             }
         ]);
 
@@ -99,8 +99,8 @@ async function seedDatabase() {
                 medallas: [medallas[0]._id],
                 comentarios: [
                     {
-                        usuario_captura: usuarios[1]._id,
-                        usuario_name: usuarios[1].username,
+                        usuario: usuarios[1]._id,
+                        username: usuarios[1].username,
                         usuario_imagen: usuarios[1].fotoPerfil,
                         texto: '¡Qué máquina!'
                     }
@@ -123,8 +123,8 @@ async function seedDatabase() {
                 medallas: [medallas[1]._id],
                 comentarios: [
                     {
-                        usuario_captura: usuarios[0]._id,
-                        usuario_name: usuarios[0].username,
+                        usuario: usuarios[0]._id,
+                        username: usuarios[0].username,
                         usuario_imagen: usuarios[0].fotoPerfil,
                         texto: 'Legendario!'
                     }
@@ -146,10 +146,34 @@ async function seedDatabase() {
                 usuario_imagen: usuarios[2].fotoPerfil,
                 comentarios: [
                     {
-                        usuario_captura: usuarios[0]._id,
-                        usuario_name: usuarios[0].username,
+                        usuario: usuarios[0]._id,
+                        username: usuarios[0].username,
                         usuario_imagen: usuarios[0].fotoPerfil,
                         texto: 'Motor rotativo increíble'
+                    }
+                ]
+            },
+
+            {
+                marca: 'Porsche',
+                modelo: '911 GT3',
+                año: 2022, // Ajusta el año al modelo específico si es necesario
+                generacion: '992', // Añade la generación del modelo, si la conoces
+                ubicacion: {
+                    latitud: 40.4168,
+                    longitud: -3.7038,
+                    direccion: 'Madrid, Spain'
+                },
+                imagen: 'https://philipireland.com/_userfiles/thumbs/_userfiles-pages-images-cars-992_gt3rs/porsche_992_gt3rs_12_2000x1335-jpg/62e48ebf8900efabf56fab20f3a367d0/porsche_992_gt3rs_12_2000x1335.jpg', // Añade una URL de imagen adecuada
+                usuario_captura: usuarios[1]._id, // Ejemplo, puedes cambiar el usuario si corresponde
+                usuario_name: usuarios[1].username,
+                usuario_imagen: usuarios[1].fotoPerfil,
+                comentarios: [
+                    {
+                        usuario: usuarios[2]._id,
+                        username: usuarios[2].username,
+                        usuario_imagen: usuarios[2].fotoPerfil,
+                        texto: '¡Increíble diseño!'
                     }
                 ]
             }
@@ -162,7 +186,7 @@ async function seedDatabase() {
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
         console.log('Base de datos poblada con éxito');
-        
+
         // Cerrar conexión
         await mongoose.connection.close();
     } catch (error) {

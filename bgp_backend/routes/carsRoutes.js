@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Token = require('../modelos/token');
 const Cars = require('../modelos/cars');
+const {obtenerTodosCoches } = require('../middleware/cars');
 
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
 
@@ -39,4 +40,24 @@ router.post('/createCar', autenticarToken, async (req, res) => {
     }
   });
 
+// Obtiene el feed de coches de amigos del usuario actual
+router.get('/all_cars', autenticarToken, async (req, res) => {
+  console.log('All cars route accessed');
+  console.log('Query params:', req.query);
+  console.log('Headers:', req.headers);
+
+  try {
+      const fechaLimite = req.query.fechaLimite ? new Date(req.query.fechaLimite) : null;
+      const coches = await obtenerTodosCoches(fechaLimite);
+      res.status(200).json(coches);
+  } catch (error) {
+      console.error('Detailed error al obtener todos los coches:', error);
+      res.status(500).json({ 
+          error: 'Error al obtener todos los coches',
+          details: error.message 
+      });
+  }
+});
+
 module.exports = router;
+

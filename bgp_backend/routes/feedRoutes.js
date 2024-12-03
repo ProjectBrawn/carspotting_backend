@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { autenticarToken } = require('../middleware/auth');
-const { obtenerFeedCoches, obtenerFeedCochesPaginado } = require('../middleware/feed');
+const { obtenerFeedCoches, obtenerFeedCochesPaginad, obtenerTodosCoches } = require('../middleware/feed');
 
 // Obtiene el feed de coches de amigos del usuario actual
 router.get('/:user', autenticarToken, async (req, res) => {
@@ -26,6 +26,8 @@ router.get('/:user', autenticarToken, async (req, res) => {
         res.status(500).send({ error: 'Error al obtener el feed de coches' });
     }
 });
+
+
 
 
 // Obtiene el feed de coches de amigos con paginación
