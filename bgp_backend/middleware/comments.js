@@ -1,6 +1,7 @@
 const Car = require('./models/Car'); // Asegúrate de que la ruta al modelo sea correcta
 
 async function postComentario(carId, usuarioId, texto, username, usuarioImagen) {
+    console.log("Me meto a meter un comentario");
     try {
         // Validar que todos los parámetros requeridos estén presentes
         if (!carId || !usuarioId || !texto || !username) {
@@ -28,6 +29,7 @@ async function postComentario(carId, usuarioId, texto, username, usuarioImagen) 
 
         // Guardar los cambios en la base de datos
         const cocheActualizado = await coche.save();
+        
 
         return cocheActualizado;
     } catch (error) {

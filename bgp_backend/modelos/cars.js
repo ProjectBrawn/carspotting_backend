@@ -54,8 +54,8 @@ const carSchema = new mongoose.Schema({
     }],
     comentarios: [{
         usuario: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            type: String,
+            required: true
         },
         texto: String,
         fecha: {

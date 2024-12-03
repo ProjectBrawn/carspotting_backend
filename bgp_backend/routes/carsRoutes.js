@@ -42,10 +42,6 @@ router.post('/createCar', autenticarToken, async (req, res) => {
 
 // Obtiene el feed de coches de amigos del usuario actual
 router.get('/all_cars', autenticarToken, async (req, res) => {
-  console.log('All cars route accessed');
-  console.log('Query params:', req.query);
-  console.log('Headers:', req.headers);
-
   try {
       const fechaLimite = req.query.fechaLimite ? new Date(req.query.fechaLimite) : null;
       const coches = await obtenerTodosCoches(fechaLimite);
@@ -59,5 +55,40 @@ router.get('/all_cars', autenticarToken, async (req, res) => {
   }
 });
 
+
+router.post('/addComment', autenticarToken, async (req, res) => {
+  try {
+      const { id, texto, username } = req.body; // ID del objeto y texto del comentario
+      console.log(id);
+      console.log(texto);
+      console.log(username);
+
+      // Verificar que se pasaron los datos necesarios
+      if (!id || !texto || !username) {
+          return res.status(400).json({ error: 'Se requiere el ID del objeto, el texto del comentario y el usuario' });
+      }
+
+      // Buscar el objeto en la base de datos
+      const coche = await Cars.findById(id);
+      if (!coche) {
+          return res.status(404).json({ error: 'Coche no encontrado' });
+      }
+
+      // Agregar el nuevo comentario
+      const nuevoComentario = {
+          usuario: username,
+          texto:texto
+      };
+      console.log(coche.comentarios);
+
+      coche.comentarios.push(nuevoComentario); // Agrega el comentario al array
+      await coche.save(); // Guarda los cambios
+
+      return res.status(200).json({ message: 'Comentario agregado con éxito', comentario: nuevoComentario });
+  } catch (error) {
+      console.error('Error al agregar comentario:', error);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 module.exports = router;
 
