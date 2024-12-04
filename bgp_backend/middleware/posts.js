@@ -1,4 +1,4 @@
-const Coche = require('../modelos/cars');
+const Posts = require('../modelos/posts');
 
 async function obtenerTodosCoches(fechaLimite = null) {
     try {
@@ -18,14 +18,14 @@ async function obtenerTodosCoches(fechaLimite = null) {
         }
 
         // Buscamos los coches de todos los usuarios
-        const coches = await Coche.find(query)
+        const coches = await Posts.find(query)
             .sort({ fecha_captura: -1 }) // Ordenar de más reciente a más antiguo
-            .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
-            .lean(); // Convierte a objeto plano para mejor rendimiento
+            // .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
+            // .lean(); // Convierte a objeto plano para mejor rendimiento
 
         return coches;
     } catch (error) {
-        console.error('Error al obtener feed de coches:', error);
+        console.error('Error al obtener feed de posts:', error);
         throw error;
     }
 }

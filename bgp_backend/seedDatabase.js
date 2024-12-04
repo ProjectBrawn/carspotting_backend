@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('./modelos/users.js');
-const Coche = require('./modelos/cars.js');
+const Post = require('./modelos/posts.js');
 const Medalla = require('./modelos/achievements.js');
 
 // Función para generar contraseña hasheada
@@ -20,7 +20,7 @@ async function seedDatabase() {
 
         // Limpiar base de datos
         await User.deleteMany({});
-        await Coche.deleteMany({});
+        await Post.deleteMany({});
         await Medalla.deleteMany({});
 
         // Crear algunas medallas de ejemplo
@@ -91,8 +91,10 @@ async function seedDatabase() {
         usuarios[2].amigos = [usuarios[0]._id];
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
+        console.log('Usuarios creados con éxito');
+
         // Crear coches
-        const coches = await Coche.create([
+        const posts = await Post.create([
             {
                 marca: 'Toyota',
                 modelo: 'Supra MK4',
@@ -104,15 +106,11 @@ async function seedDatabase() {
                     direccion: 'New York, NY'
                 },
                 imagen: 'https://pbs.twimg.com/media/EbbZkhZWAAAa8iC.jpg:large',
-                usuario_captura: usuarios[0]._id,
-                usuario_name: usuarios[0].username,
-                usuario_imagen: usuarios[0].fotoPerfil,
+                username: usuarios[0].username,
                 medallas: [medallas[0]._id],
                 comentarios: [
                     {
-                        usuario: usuarios[1]._id,
-                        username: usuarios[1].username,
-                        usuario_imagen: usuarios[1].fotoPerfil,
+                        usuario: usuarios[1].username,
                         texto: '¡Qué máquina!'
                     }
                 ]
@@ -128,15 +126,11 @@ async function seedDatabase() {
                     direccion: 'Tokyo, Japan'
                 },
                 imagen: 'http://www.jmautomocion.com/pics_fotosproductos/1495/big_full_1.jpg',
-                usuario_captura: usuarios[1]._id,
-                usuario_name: usuarios[1].username,
-                usuario_imagen: usuarios[1].fotoPerfil,
+                username: usuarios[1].username,
                 medallas: [medallas[1]._id],
                 comentarios: [
                     {
-                        usuario: usuarios[0]._id,
-                        username: usuarios[0].username,
-                        usuario_imagen: usuarios[0].fotoPerfil,
+                        usuario: usuarios[0].username,
                         texto: 'Legendario!'
                     }
                 ]
@@ -152,14 +146,10 @@ async function seedDatabase() {
                     direccion: 'Los Angeles, CA'
                 },
                 imagen: 'https://i.ytimg.com/vi/nn9t_NaH2vo/maxresdefault.jpg',
-                usuario_captura: usuarios[2]._id,
-                usuario_name: usuarios[2].username,
-                usuario_imagen: usuarios[2].fotoPerfil,
+                username: usuarios[2].username,
                 comentarios: [
                     {
-                        usuario: usuarios[0]._id,
-                        username: usuarios[0].username,
-                        usuario_imagen: usuarios[0].fotoPerfil,
+                        usuario: usuarios[0].username,
                         texto: 'Motor rotativo increíble'
                     }
                 ]
@@ -176,14 +166,10 @@ async function seedDatabase() {
                     direccion: 'Madrid, Spain'
                 },
                 imagen: 'https://philipireland.com/_userfiles/thumbs/_userfiles-pages-images-cars-992_gt3rs/porsche_992_gt3rs_12_2000x1335-jpg/62e48ebf8900efabf56fab20f3a367d0/porsche_992_gt3rs_12_2000x1335.jpg', // Añade una URL de imagen adecuada
-                usuario_captura: usuarios[1]._id, // Ejemplo, puedes cambiar el usuario si corresponde
-                usuario_name: usuarios[1].username,
-                usuario_imagen: usuarios[1].fotoPerfil,
+                username: usuarios[1].username,
                 comentarios: [
                     {
-                        usuario: usuarios[2]._id,
-                        username: usuarios[2].username,
-                        usuario_imagen: usuarios[2].fotoPerfil,
+                        usuario: usuarios[2].username,
                         texto: '¡Increíble diseño!'
                     }
                 ]
@@ -200,11 +186,8 @@ async function seedDatabase() {
                     direccion: 'Madrid, Spain'
                 },
                 imagen: 'https://img.remediosdigitales.com/47c725/mclaren-f1-senna-9/1366_2000.jpg', // Añade una URL de imagen adecuada
-                usuario_captura: usuarios[3]._id, // Ejemplo, puedes cambiar el usuario si corresponde
-                usuario_name: usuarios[3].username,
-                usuario_imagen: usuarios[3].fotoPerfil,
+                username: usuarios[3].username,
                 comentarios: [
-
                 ]
             }
         ]);

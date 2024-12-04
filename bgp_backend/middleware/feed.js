@@ -1,5 +1,5 @@
 const User = require('../modelos/users');
-const Coche = require('../modelos/cars');
+const Post = require('../modelos/posts');
 const Medalla = require('../modelos/achievements');
 
 async function obtenerTodosCoches(fechaLimite = null) {
@@ -20,14 +20,14 @@ async function obtenerTodosCoches(fechaLimite = null) {
         }
 
         // Buscamos los coches de todos los usuarios
-        const coches = await Coche.find(query)
+        const posts = await Post.find(query)
             .sort({ fecha_captura: -1 }) // Ordenar de más reciente a más antiguo
-            .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
-            .lean(); // Convierte a objeto plano para mejor rendimiento
+            // .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
+            // .lean(); // Convierte a objeto plano para mejor rendimiento
 
-        return coches;
+        return posts;
     } catch (error) {
-        console.error('Error al obtener feed de coches:', error);
+        console.error('Error al obtener feed de posts:', error);
         throw error;
     }
 }
@@ -54,14 +54,14 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
         }
 
         // Buscamos los coches
-        const coches = await Coche.find(query)
+        const posts = await Post.find(query)
             .sort({ fecha_captura: -1 }) // Ordenar de más reciente a más antiguo
             .limit(limite) // Limitar número de resultados
-            .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
-            .populate('medallas') // Opcional: poblar medallas si las necesitas
-            .lean(); // Convierte a objeto plano para mejor rendimiento
+            // .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
+            // .populate('medallas') // Opcional: poblar medallas si las necesitas
+            // .lean(); // Convierte a objeto plano para mejor rendimiento
 
-        return coches;
+        return posts;
     } catch (error) {
         console.error('Error al obtener feed de coches:', error);
         throw error;
@@ -97,13 +97,13 @@ async function obtenerFeedCochesPaginado(usuarioId, ultimaFecha = null, limite =
             query.fecha_captura = { $lt: ultimaFecha };
         }
 
-        const coches = await Coche.find(query)
+        const posts = await Post.find(query)
             .sort({ fecha_captura: -1 })
             .limit(limite)
-            .populate('usuario_captura', 'nombre username fotoPerfil')
-            .lean();
+            // .populate('usuario_captura', 'nombre username fotoPerfil')
+            // .lean();
 
-        return coches;
+        return posts;
     } catch (error) {
         console.error('Error en paginación de feed:', error);
         throw error;

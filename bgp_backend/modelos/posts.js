@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Modelo de Coche
-const carSchema = new mongoose.Schema({
+const postSchema = new mongoose.Schema({
     marca: { 
         type: String, 
         required: true 
@@ -33,19 +33,8 @@ const carSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    usuario_captura: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    usuario_imagen: {
+    username: {
         type: String,
-        ref: 'User',
-        required: true
-    },
-    usuario_name: {
-        type: String,
-        ref: 'User',
         required: true
     },
     medallas: [{
@@ -69,4 +58,4 @@ const carSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Car', carSchema);
+module.exports = mongoose.model('Post', postSchema);
