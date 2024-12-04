@@ -71,6 +71,17 @@ async function seedDatabase() {
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/2.jpg',
                 puntos_experiencia: 0,
                 garaje_principal: []
+            },
+            {
+                nombre: 'Ayrton Senna',
+                apellidos: 'apellido',
+                username: 'ayrton1',
+                email: 'ayrton@example.com',
+                password: await hashPassword('password789'),
+                descripcion: 'Best f1 driver ever',
+                fotoPerfil: 'https://randomuser.me/api/portraits/men/5.jpg',
+                puntos_experiencia: 0,
+                garaje_principal: []
             }
         ]);
 
@@ -175,6 +186,25 @@ async function seedDatabase() {
                         usuario_imagen: usuarios[2].fotoPerfil,
                         texto: '¡Increíble diseño!'
                     }
+                ]
+            },
+
+            {
+                marca: 'Mclaren',
+                modelo: 'MP4/8A',
+                año: 1982, // Ajusta el año al modelo específico si es necesario
+                generacion: '992', // Añade la generación del modelo, si la conoces
+                ubicacion: {
+                    latitud: 43.4168,
+                    longitud: -3.7038,
+                    direccion: 'Madrid, Spain'
+                },
+                imagen: 'https://img.remediosdigitales.com/47c725/mclaren-f1-senna-9/1366_2000.jpg', // Añade una URL de imagen adecuada
+                usuario_captura: usuarios[3]._id, // Ejemplo, puedes cambiar el usuario si corresponde
+                usuario_name: usuarios[3].username,
+                usuario_imagen: usuarios[3].fotoPerfil,
+                comentarios: [
+
                 ]
             }
         ]);
