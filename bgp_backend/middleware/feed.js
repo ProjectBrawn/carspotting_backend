@@ -45,7 +45,7 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
 
         // Construimos el query base
         const query = {
-            usuario_captura: { $in: usuario.amigos }
+            username: { $in: usuario.amigos }
         };
 
         // Si se proporciona una fecha límite, añadimos condición de fecha
@@ -89,7 +89,7 @@ async function obtenerFeedCochesPaginado(usuarioId, ultimaFecha = null, limite =
         const usuario = await User.findById(usuarioId).select('amigos');
         
         const query = {
-            usuario_captura: { $in: usuario.amigos }
+            username: { $in: usuario.amigos }
         };
 
         // Si se proporciona la última fecha, busca coches anteriores a esa fecha

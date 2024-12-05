@@ -15,12 +15,12 @@ router.get('/:user', autenticarToken, async (req, res) => {
 
     try {
         // Llamar a la función para obtener el feed de coches
-        const coches = await obtenerFeedCoches(
+        const posts = await obtenerFeedCoches(
             username, 
             fechaLimite ? new Date(fechaLimite) : null, 
             parseInt(limite) || 20
         );
-        res.status(200).send(coches);
+        res.status(200).send(posts);
     } catch (error) {
         console.error('Error al obtener el feed de coches:', error);
         res.status(500).send({ error: 'Error al obtener el feed de coches' });

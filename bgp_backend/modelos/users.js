@@ -49,8 +49,7 @@ const userSchema = new mongoose.Schema({
         }
     }],
     amigos: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        type: String,
     }],
     seguidores: [{
         type: mongoose.Schema.Types.ObjectId,

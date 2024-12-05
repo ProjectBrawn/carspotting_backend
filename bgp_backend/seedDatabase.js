@@ -86,9 +86,9 @@ async function seedDatabase() {
         ]);
 
         // Añadir amigos
-        usuarios[0].amigos = [usuarios[1]._id, usuarios[2]._id];
-        usuarios[1].amigos = [usuarios[0]._id];
-        usuarios[2].amigos = [usuarios[0]._id];
+        usuarios[0].amigos = [usuarios[1].username, usuarios[2].username];
+        usuarios[1].amigos = [usuarios[0].username];
+        usuarios[2].amigos = [usuarios[0].username];
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
         console.log('Usuarios creados con éxito');
