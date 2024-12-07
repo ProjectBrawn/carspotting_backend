@@ -7,12 +7,6 @@ const {obtenerTodosCoches } = require('../middleware/posts');
 
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
 
-router.get('/', autenticarToken, async (req, res) => {
-    //Recupera todos los coches
-    const posts = await Posts.find();
-    res.send(posts);
-});
-
 router.get('/:id', autenticarToken, async (req, res) => {
     console.log("dentro")
     try {
@@ -35,6 +29,8 @@ router.get('/:id', autenticarToken, async (req, res) => {
         return res.status(500).send('Error en el servidor');
     }
 });
+
+
 // router.post('/createCar', autenticarToken, async (req, res) => {
 //     const { marca, modelo, generacion, año, url_imagen, tipoCarroceria } = req.body;
   
@@ -64,7 +60,7 @@ router.get('/:id', autenticarToken, async (req, res) => {
 //   });
 
 // Obtiene el feed de coches de amigos del usuario actual
-router.get('/all_cars', autenticarToken, async (req, res) => {
+router.get('/', autenticarToken, async (req, res) => {
   try {
       const fechaLimite = req.query.fechaLimite ? new Date(req.query.fechaLimite) : null;
       const posts = await obtenerTodosCoches(fechaLimite);
