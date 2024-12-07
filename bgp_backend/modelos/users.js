@@ -50,6 +50,12 @@ const userSchema = new mongoose.Schema({
             message: 'El garaje principal puede tener máximo 5 coches'
         }
     },    
+    spots: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Coche'
+        }]
+    },    
     amigos: [{
         type: String,
     }],

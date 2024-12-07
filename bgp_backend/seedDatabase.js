@@ -22,7 +22,6 @@ async function seedDatabase() {
         await User.deleteMany({});
         await Post.deleteMany({});
         await Medalla.deleteMany({});
-        await Medalla.deleteMany({});
 
         // Crear algunas medallas de ejemplo
         const medallas = await Medalla.create([
@@ -49,7 +48,8 @@ async function seedDatabase() {
                 descripcion: 'Amante de los coches clásicos',
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg',
                 puntos_experiencia: 0,
-                garaje_principal: []
+                garaje_principal: [],
+                spots: [] // Añadido el campo 'spots'
             },
             {
                 nombre: 'María López',
@@ -60,7 +60,8 @@ async function seedDatabase() {
                 descripcion: 'Fan de los deportivos',
                 fotoPerfil: 'https://randomuser.me/api/portraits/women/1.jpg',
                 puntos_experiencia: 0,
-                garaje_principal: []
+                garaje_principal: [],
+                spots: [] // Añadido el campo 'spots'
             },
             {
                 nombre: 'Carlos Ruiz',
@@ -71,7 +72,8 @@ async function seedDatabase() {
                 descripcion: 'Coleccionista de autos japoneses',
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/2.jpg',
                 puntos_experiencia: 0,
-                garaje_principal: []
+                garaje_principal: [],
+                spots: [] // Añadido el campo 'spots'
             },
             {
                 nombre: 'Ayrton Senna',
@@ -82,7 +84,8 @@ async function seedDatabase() {
                 descripcion: 'Best f1 driver ever',
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/5.jpg',
                 puntos_experiencia: 0,
-                garaje_principal: []
+                garaje_principal: [],
+                spots: [] // Añadido el campo 'spots'
             }
         ]);
 
@@ -159,14 +162,14 @@ async function seedDatabase() {
             {
                 marca: 'Porsche',
                 modelo: '911 GT3',
-                año: 2022, // Ajusta el año al modelo específico si es necesario
-                generacion: '992', // Añade la generación del modelo, si la conoces
+                año: 2022,
+                generacion: '992',
                 ubicacion: {
                     latitud: 40.4168,
                     longitud: -3.7038,
                     direccion: 'Madrid, Spain'
                 },
-                imagen: 'https://philipireland.com/_userfiles/thumbs/_userfiles-pages-images-cars-992_gt3rs/porsche_992_gt3rs_12_2000x1335-jpg/62e48ebf8900efabf56fab20f3a367d0/porsche_992_gt3rs_12_2000x1335.jpg', // Añade una URL de imagen adecuada
+                imagen: 'https://philipireland.com/_userfiles/thumbs/_userfiles-pages-images-cars-992_gt3rs/porsche_992_gt3rs_12_2000x1335-jpg/62e48ebf8900efabf56fab20f3a367d0/porsche_992_gt3rs_12_2000x1335.jpg',
                 username: usuarios[1].username,
                 comentarios: [
                     {
@@ -179,25 +182,33 @@ async function seedDatabase() {
             {
                 marca: 'Mclaren',
                 modelo: 'MP4/8A',
-                año: 1982, // Ajusta el año al modelo específico si es necesario
-                generacion: '992', // Añade la generación del modelo, si la conoces
+                año: 1982,
+                generacion: '992',
                 ubicacion: {
                     latitud: 40.5168,
                     longitud: -3.7038,
                     direccion: 'Madrid, Spain'
                 },
-                imagen: 'https://img.remediosdigitales.com/47c725/mclaren-f1-senna-9/1366_2000.jpg', // Añade una URL de imagen adecuada
+                imagen: 'https://img.remediosdigitales.com/47c725/mclaren-f1-senna-9/1366_2000.jpg',
                 username: usuarios[3].username,
                 comentarios: [
                 ]
             }
         ]);
 
-        // // Actualizar garajes principales
-        // usuarios[0].garaje_principal = [posts[0]._id];
-        // // usuarios[0].garaje_principal = [posts[1]._id];
-        usuarios[0].garaje_principal = [posts[0]._id, posts[1]._id]; // IDs de los coches que deseas añadir
-        await usuarios[0].save();
+        // Asignar coches a 'garaje_principal' de los usuarios
+        usuarios[0].garaje_principal = [posts[0]._id, posts[1]._id]; // Juan tiene estos coches en su garaje
+        usuarios[1].garaje_principal = [posts[2]._id, posts[3]._id]; // María tiene estos coches en su garaje
+        usuarios[2].garaje_principal = [posts[2]._id]; // Carlos tiene este coche en su garaje
+        usuarios[3].garaje_principal = [posts[4]._id]; // Ayrton tiene este coche en su garaje
+
+        // Asignar coches a 'spots' de los usuarios
+        usuarios[0].spots = [posts[1]._id, posts[2]._id]; // Juan tiene estos coches en spots
+        usuarios[1].spots = [posts[3]._id, posts[4]._id]; // María tiene estos coches en spots
+        usuarios[2].spots = [posts[0]._id]; // Carlos tiene este coche en spots
+        usuarios[3].spots = [posts[2]._id]; // Ayrton tiene este coche en spots
+
+        // Guardar usuarios con sus coches en garaje y spots
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
         console.log('Base de datos poblada con éxito');
