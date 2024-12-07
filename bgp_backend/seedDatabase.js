@@ -130,7 +130,7 @@ async function seedDatabase() {
                     direccion: 'Tokyo, Japan'
                 },
                 imagen: 'http://www.jmautomocion.com/pics_fotosproductos/1495/big_full_1.jpg',
-                username: usuarios[1].username,
+                username: usuarios[0].username,
                 medallas: [medallas[1]._id],
                 comentarios: [
                     {
@@ -150,7 +150,7 @@ async function seedDatabase() {
                     direccion: 'Los Angeles, CA'
                 },
                 imagen: 'https://i.ytimg.com/vi/nn9t_NaH2vo/maxresdefault.jpg',
-                username: usuarios[2].username,
+                username: usuarios[0].username,
                 comentarios: [
                     {
                         usuario: usuarios[0].username,
