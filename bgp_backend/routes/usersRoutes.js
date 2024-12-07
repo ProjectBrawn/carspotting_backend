@@ -30,7 +30,7 @@ router.put('/:username', autenticarToken, async (req, res) => {
     const user = await Users.findOne({ username: req.params.username });
 
     if (!user) {
-      return res.status(404).send('Usuario no encontrado');
+      return res.status(404).send('Usssuario no encontrado');
     }
 
     // Validar bio y username
@@ -89,6 +89,7 @@ router.post('/createUser', async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      amigos: [username]
     });
     
 
@@ -146,4 +147,126 @@ router.delete('/:username', autenticarToken, async (req, res) => {
   await Users.findByIdAndDelete(req.params.username);
   res.send('Usuario eliminado');
 });
+
+// Agregar un amigo
+router.post('/agregarAmigo', autenticarToken, async (req, res) => {
+  const { username, amigoUsername } = req.body; // Ambos usernames en el body
+  console.log(req.body)
+  if (!username || !amigoUsername) {
+    return res.status(400).send('Se deben proporcionar ambos nombres de usuario');
+  }
+
+  try {
+    // Obtener al usuario que hace la solicitud
+    console.log("usuario")
+    const usuario = await Users.findOne({ username: username });
+    console.log(usuario)
+    if (!usuario) {
+      return res.status(404).send('Usuario no eeeencontrado');
+    }
+
+    // Obtener al usuario que se quiere agregar como amigo
+    const amigo = await Users.findOne({ username: amigoUsername });
+    if (!amigo) {
+      return res.status(404).send('Amigo no eeeencontrado');
+    }
+
+    // Verificar si ya son amigos
+    if (usuario.amigos.includes(amigoUsername)) {
+      return res.status(400).send('Ya eres amigo de este usuario');
+    }
+
+    // Agregar el amigo a la lista de amigos de ambos usuarios
+    usuario.amigos.push(amigoUsername);
+    amigo.amigos.push(username); // El amigo también te agrega como amigo
+
+    // Guardar los cambios en ambos usuarios
+    await usuario.save();
+    await amigo.save();
+
+    res.status(200).send('Amigos agregados correctamente');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al agregar amigo');
+  }
+});
+
+
+// Eliminar un amigo
+router.put('/:username/eliminarAmigo', autenticarToken, async (req, res) => {
+  const { amigoUsername } = req.body; // El username del amigo que se quiere eliminar
+
+  if (!amigoUsername) {
+    return res.status(400).send('Se debe proporcionar el nombre de usuario del amigo');
+  }
+
+  try {
+    // Obtener al usuario que hace la solicitud
+    const usuario = await Users.findOne({ username: req.params.username });
+    if (!usuario) {
+      return res.status(404).send('Usuario no encontrado');
+    }
+
+    // Obtener al amigo que se quiere eliminar
+    const amigo = await Users.findOne({ username: amigoUsername });
+    if (!amigo) {
+      return res.status(404).send('Amigo no encontrado');
+    }
+
+    // Verificar si son amigos
+    if (!usuario.amigos.includes(amigoUsername)) {
+      return res.status(400).send('Este usuario no es tu amigo');
+    }
+
+    // Eliminar el amigo de la lista de amigos
+    usuario.amigos = usuario.amigos.filter(amigo => amigo !== amigoUsername);
+    amigo.amigos = amigo.amigos.filter(amigo => amigo !== req.params.username);
+
+    // Guardar los cambios en ambos usuarios
+    await usuario.save();
+    await amigo.save();
+
+    res.status(200).send('Amigo eliminado correctamente');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al eliminar amigo');
+  }
+});
+
+// Comprobar si dos usuarios son amigos
+router.post('/comprobarAmistad', autenticarToken, async (req, res) => {
+  const { username, amigoUsername } = req.body; // Ambos nombres de usuario desde el body
+
+  if (!username || !amigoUsername) {
+    return res.status(400).send('Se deben proporcionar ambos nombres de usuario');
+  }
+
+  try {
+    // Obtener al usuario que hace la solicitud
+    console.log(username)
+    const usuario = await Users.findOne({ username });
+    if (!usuario) {
+      return res.status(404).send('Usuario no encontrado');
+    }
+
+    // Obtener al amigo que se quiere comprobar
+    const amigo = await Users.findOne({ username: amigoUsername });
+    if (!amigo) {
+      return res.status(404).send('Amigo no encontrado');
+    }
+
+    // Comprobar si son amigos
+    if (usuario.amigos.includes(amigoUsername)) {
+      return res.status(200).send({'result':"true"});
+    } else {
+      return res.status(200).send({'result':"false"})
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al comprobar la amistad');
+  }
+});
+
+
+
 module.exports = router;
