@@ -22,6 +22,7 @@ async function seedDatabase() {
         await User.deleteMany({});
         await Post.deleteMany({});
         await Medalla.deleteMany({});
+        await Medalla.deleteMany({});
 
         // Crear algunas medallas de ejemplo
         const medallas = await Medalla.create([
@@ -181,7 +182,7 @@ async function seedDatabase() {
                 año: 1982, // Ajusta el año al modelo específico si es necesario
                 generacion: '992', // Añade la generación del modelo, si la conoces
                 ubicacion: {
-                    latitud: 43.4168,
+                    latitud: 40.5168,
                     longitud: -3.7038,
                     direccion: 'Madrid, Spain'
                 },
@@ -193,9 +194,10 @@ async function seedDatabase() {
         ]);
 
         // // Actualizar garajes principales
-        // usuarios[0].garaje_principal = [coches[0]._id];
-        // usuarios[1].garaje_principal = [coches[1]._id];
-        // usuarios[2].garaje_principal = [coches[2]._id];
+        // usuarios[0].garaje_principal = [posts[0]._id];
+        // // usuarios[0].garaje_principal = [posts[1]._id];
+        usuarios[0].garaje_principal = [posts[0]._id, posts[1]._id]; // IDs de los coches que deseas añadir
+        await usuarios[0].save();
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
         console.log('Base de datos poblada con éxito');

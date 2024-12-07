@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const Token = require('../modelos/token');
@@ -12,6 +13,28 @@ router.get('/', autenticarToken, async (req, res) => {
     res.send(posts);
 });
 
+router.get('/:id', autenticarToken, async (req, res) => {
+    console.log("dentro")
+    try {
+        // Asegúrate de que el ID proporcionado sea un ObjectId válido
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).send('ID no válido');
+        }
+
+        // Busca el post por su ObjectId
+        const post = await Posts.findById(req.params.id);
+        console.log(post)
+        if (!post) {
+            return res.status(404).send('Post no encontrado');
+        }
+
+        return res.status(200).send(post);
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Error en el servidor');
+    }
+});
 // router.post('/createCar', autenticarToken, async (req, res) => {
 //     const { marca, modelo, generacion, año, url_imagen, tipoCarroceria } = req.body;
   

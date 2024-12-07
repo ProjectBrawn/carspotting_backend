@@ -38,16 +38,18 @@ const userSchema = new mongoose.Schema({
         type: Number, 
         default: 0 
     },
-    garaje_principal: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Coche',
+    garaje_principal: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Coche'
+        }],
         validate: {
             validator: function(v) {
-                return v.length <= 5;
+                return v.length <= 5; // Valida el tamaño del array completo
             },
             message: 'El garaje principal puede tener máximo 5 coches'
         }
-    }],
+    },    
     amigos: [{
         type: String,
     }],
