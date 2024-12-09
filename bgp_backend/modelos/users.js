@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     },
     fotoPerfil: { 
         type: String, 
-        default: 'default-profile.jpg' 
+        default: 'https://i.etsystatic.com/35372836/r/il/70df1f/5861902788/il_fullxfull.5861902788_odt2.jpg' 
     },
     puntos_experiencia: { 
         type: Number, 

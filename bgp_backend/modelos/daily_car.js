@@ -1,21 +1,27 @@
 const mongoose = require('mongoose');
 
-
-const cocheDiaSchema = new mongoose.Schema({
-    coche: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Coche',
-        required: true
-    },
-    fecha: {
-        type: Date,
-        default: Date.now,
-        unique: true
-    },
-    puntos_extra: {
-        type: Number,
-        default: 5
-    }
+const carDay = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  image: {
+    type: String,
+    required: true
+  }
 });
 
-module.exports = mongoose.model('cocheDiaSchema', cocheDiaSchema);
+const CarDay = mongoose.model('CarDay', carDay);
+
+// Crear un índice global que solo usaremos para guardar el índice del coche del día
+const carDayIndex = new mongoose.Schema({
+  carIndex: {
+    type: Number,
+    default: 0,  // El primer coche será el coche del día inicial
+    required: true
+  }
+});
+
+const CarDayIndex = mongoose.model('CarDayIndex', carDayIndex);
+
+module.exports = { CarDay, CarDayIndex };

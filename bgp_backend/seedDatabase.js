@@ -46,7 +46,6 @@ async function seedDatabase() {
                 email: 'juan@example.com',
                 password: await hashPassword('password123'),
                 descripcion: 'Amante de los coches clásicos',
-                fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg',
                 puntos_experiencia: 0,
                 garaje_principal: [],
                 spots: [] // Añadido el campo 'spots'

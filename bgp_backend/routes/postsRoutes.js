@@ -109,5 +109,33 @@ router.post('/addComment', autenticarToken, async (req, res) => {
       return res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
+router.get('/:id/comments', autenticarToken, async (req, res) => {
+    print("la llammooooo")
+    try {
+        print("dentroooo")
+        
+        // Validar que el ID es un ObjectId válido
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).send('ID no válido');
+        }
+
+        // Buscar el post por su ID
+        const post = await Posts.findById(req.params.id);
+        print("el postt")
+        print(post)
+        if (!post) {
+            return res.status(404).send('Post no encontrado');
+        }
+
+        // Devolver los comentarios del post
+        return res.status(200).json({ comentarios: post.comentarios });
+    } catch (error) {
+        console.error('Error al obtener los comentarios:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+
 module.exports = router;
 

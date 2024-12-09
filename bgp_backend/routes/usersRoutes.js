@@ -178,7 +178,6 @@ router.post('/agregarAmigo', autenticarToken, async (req, res) => {
 
     // Agregar el amigo a la lista de amigos de ambos usuarios
     usuario.amigos.push(amigoUsername);
-    amigo.amigos.push(username); // El amigo también te agrega como amigo
 
     // Guardar los cambios en ambos usuarios
     await usuario.save();
