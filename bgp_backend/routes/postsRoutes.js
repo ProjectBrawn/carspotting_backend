@@ -8,7 +8,6 @@ const {obtenerTodosCoches } = require('../middleware/posts');
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
 
 router.get('/:id', autenticarToken, async (req, res) => {
-    console.log("dentro")
     try {
         // Asegúrate de que el ID proporcionado sea un ObjectId válido
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -17,7 +16,6 @@ router.get('/:id', autenticarToken, async (req, res) => {
 
         // Busca el post por su ObjectId
         const post = await Posts.findById(req.params.id);
-        console.log(post)
         if (!post) {
             return res.status(404).send('Post no encontrado');
         }
@@ -25,7 +23,6 @@ router.get('/:id', autenticarToken, async (req, res) => {
         return res.status(200).send(post);
 
     } catch (error) {
-        console.log(error)
         return res.status(500).send('Error en el servidor');
     }
 });
@@ -78,9 +75,7 @@ router.get('/', autenticarToken, async (req, res) => {
 router.post('/addComment', autenticarToken, async (req, res) => {
   try {
       const { id, texto, username } = req.body; // ID del objeto y texto del comentario
-      console.log(id);
-      console.log(texto);
-      console.log(username);
+
 
       // Verificar que se pasaron los datos necesarios
       if (!id || !texto || !username) {
@@ -98,7 +93,6 @@ router.post('/addComment', autenticarToken, async (req, res) => {
           usuario: username,
           texto:texto
       };
-      console.log(post.comentarios);
 
       post.comentarios.push(nuevoComentario); // Agrega el comentario al array
       await post.save(); // Guarda los cambios

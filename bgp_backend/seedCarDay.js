@@ -32,10 +32,8 @@ async function populateCars() {
         if (!existingIndex) {
             const index = new CarDayIndex({ carIndex: 0 });
             await index.save();
-            console.log('Índice inicial creado');
         }
 
-        console.log(`${result.length} coches insertados exitosamente`);
         await mongoose.connection.close();
     } catch (error) {
         console.error('Error al poblar la colección de coches:', error);

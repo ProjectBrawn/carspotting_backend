@@ -151,16 +151,13 @@ router.delete('/:username', autenticarToken, async (req, res) => {
 // Agregar un amigo
 router.post('/agregarAmigo', autenticarToken, async (req, res) => {
   const { username, amigoUsername } = req.body; // Ambos usernames en el body
-  console.log(req.body)
   if (!username || !amigoUsername) {
     return res.status(400).send('Se deben proporcionar ambos nombres de usuario');
   }
 
   try {
     // Obtener al usuario que hace la solicitud
-    console.log("usuario")
     const usuario = await Users.findOne({ username: username });
-    console.log(usuario)
     if (!usuario) {
       return res.status(404).send('Usuario no eeeencontrado');
     }
@@ -242,7 +239,6 @@ router.post('/comprobarAmistad', autenticarToken, async (req, res) => {
 
   try {
     // Obtener al usuario que hace la solicitud
-    console.log(username)
     const usuario = await Users.findOne({ username });
     if (!usuario) {
       return res.status(404).send('Usuario no encontrado');

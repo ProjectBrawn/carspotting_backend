@@ -73,14 +73,12 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
 // 1. Obtener los últimos 20 coches de amigos
 async function ejemploUso1() {
     const feedCoches = await obtenerFeedCoches('ID_DEL_USUARIO');
-    console.log(feedCoches);
 }
 
 // 2. Obtener coches de amigos hasta una fecha específica
 async function ejemploUso2() {
     const fechaLimite = new Date('2024-01-01');
     const feedCoches = await obtenerFeedCoches('ID_DEL_USUARIO', fechaLimite, 50);
-    console.log(feedCoches);
 }
 
 // 3. Método para paginación (por si quieres cargar más coches)
@@ -113,13 +111,11 @@ async function obtenerFeedCochesPaginado(usuarioId, ultimaFecha = null, limite =
 // Ejemplo de uso de paginación
 async function ejemploPaginacion() {
     let feedInicial = await obtenerFeedCochesPaginado('ID_DEL_USUARIO');
-    console.log('Feed inicial:', feedInicial);
 
     // Si quieres cargar más, usas la fecha del último coche
     if (feedInicial.length > 0) {
         const ultimaFecha = feedInicial[feedInicial.length - 1].fecha_captura;
         let feedSiguiente = await obtenerFeedCochesPaginado('ID_DEL_USUARIO', ultimaFecha);
-        console.log('Siguiente página:', feedSiguiente);
     }
 }
 
