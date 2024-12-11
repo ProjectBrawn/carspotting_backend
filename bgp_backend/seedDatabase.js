@@ -110,7 +110,7 @@ async function seedDatabase() {
                     direccion: 'New York, NY'
                 },
                 imagen: 'https://pbs.twimg.com/media/EbbZkhZWAAAa8iC.jpg:large',
-                username: usuarios[0].username,
+                username: usuarios[2].username,
                 medallas: [medallas[0]._id],
                 comentarios: [
                     {
@@ -150,7 +150,7 @@ async function seedDatabase() {
                     direccion: 'Los Angeles, CA'
                 },
                 imagen: 'https://i.ytimg.com/vi/nn9t_NaH2vo/maxresdefault.jpg',
-                username: usuarios[0].username,
+                username: usuarios[3].username,
                 comentarios: [
                     {
                         usuario: usuarios[0].username,
@@ -190,20 +190,20 @@ async function seedDatabase() {
                     direccion: 'Madrid, Spain'
                 },
                 imagen: 'https://img.remediosdigitales.com/47c725/mclaren-f1-senna-9/1366_2000.jpg',
-                username: usuarios[3].username,
+                username: usuarios[1].username,
                 comentarios: [
                 ]
             }
         ]);
 
         // Asignar coches a 'garaje_principal' de los usuarios
-        usuarios[0].garaje_principal = [posts[0]._id, posts[1]._id]; // Juan tiene estos coches en su garaje
-        usuarios[1].garaje_principal = [posts[2]._id, posts[3]._id]; // María tiene estos coches en su garaje
-        usuarios[2].garaje_principal = [posts[2]._id]; // Carlos tiene este coche en su garaje
-        usuarios[3].garaje_principal = [posts[4]._id]; // Ayrton tiene este coche en su garaje
+        usuarios[0].garaje_principal = [posts[1]._id]; // Juan tiene estos coches en su garaje
+        usuarios[1].garaje_principal = [posts[3]._id, posts[4]._id]; // María tiene estos coches en su garaje
+        usuarios[2].garaje_principal = [posts[0]._id]; // Carlos tiene este coche en su garaje
+        usuarios[3].garaje_principal = []; // Ayrton tiene este coche en su garaje
 
         // Asignar coches a 'spots' de los usuarios
-        usuarios[0].spots = [posts[1]._id, posts[2]._id]; // Juan tiene estos coches en spots
+        usuarios[0].spots = [posts[1]._id]; // Juan tiene estos coches en spots
         usuarios[1].spots = [posts[3]._id, posts[4]._id]; // María tiene estos coches en spots
         usuarios[2].spots = [posts[0]._id]; // Carlos tiene este coche en spots
         usuarios[3].spots = [posts[2]._id]; // Ayrton tiene este coche en spots
