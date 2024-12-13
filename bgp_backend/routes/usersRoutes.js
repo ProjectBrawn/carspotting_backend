@@ -30,7 +30,7 @@ router.put('/:username', autenticarToken, async (req, res) => {
     const user = await Users.findOne({ username: req.params.username });
 
     if (!user) {
-      return res.status(404).send('Usssuario no encontrado');
+      return res.status(404).send('Ussuario no encontrado');
     }
 
     // Validar bio y username
@@ -89,7 +89,7 @@ router.post('/createUser', async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      amigos: [username]
+      siguiendo: [username]
     });
     
 
@@ -143,38 +143,40 @@ router.post('/login', async (req, res) => {
 });
 
 // Elimina un usuario específico por username 
-router.delete('/:username', autenticarToken, async (req, res) => {
+router.delete('/deleteUser/:username', autenticarToken, async (req, res) => {
   await Users.findByIdAndDelete(req.params.username);
   res.send('Usuario eliminado');
 });
 
 // Agregar un amigo
-router.post('/agregarAmigo', autenticarToken, async (req, res) => {
-  const { username, amigoUsername } = req.body; // Ambos usernames en el body
-  if (!username || !amigoUsername) {
+router.post('/follow', autenticarToken, async (req, res) => {
+  const { usernameOrigin, usernameDestiny } = req.body; // Ambos usernames en el body
+  if (!usernameOrigin || !usernameDestiny) {
     return res.status(400).send('Se deben proporcionar ambos nombres de usuario');
   }
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ username: username });
+    const usuario = await Users.findOne({ username: usernameOrigin });
     if (!usuario) {
-      return res.status(404).send('Usuario no eeeencontrado');
+      return res.status(404).send('Usuario no encontrado');
     }
 
     // Obtener al usuario que se quiere agregar como amigo
-    const amigo = await Users.findOne({ username: amigoUsername });
+    const amigo = await Users.findOne({ username: usernameDestiny });
     if (!amigo) {
-      return res.status(404).send('Amigo no eeeencontrado');
+      return res.status(404).send('Amigo no encontrado');
     }
 
     // Verificar si ya son amigos
-    if (usuario.amigos.includes(amigoUsername)) {
+    if (usuario.siguiendo.includes(usernameDestiny)) {
       return res.status(400).send('Ya eres amigo de este usuario');
     }
 
     // Agregar el amigo a la lista de amigos de ambos usuarios
-    usuario.amigos.push(amigoUsername);
+    usuario.siguiendo.push(usernameDestiny);
+    //Agregar el usuario a la lista de seguidores del amigo
+    amigo.seguidores.push(usernameOrigin);
 
     // Guardar los cambios en ambos usuarios
     await usuario.save();
@@ -189,45 +191,48 @@ router.post('/agregarAmigo', autenticarToken, async (req, res) => {
 
 
 // Eliminar un amigo
-router.put('/:username/eliminarAmigo', autenticarToken, async (req, res) => {
-  const { amigoUsername } = req.body; // El username del amigo que se quiere eliminar
+router.delete('/unfollow', autenticarToken, async (req, res) => {
+  const { usernameOrigin, usernameDestiny } = req.body;
 
-  if (!amigoUsername) {
-    return res.status(400).send('Se debe proporcionar el nombre de usuario del amigo');
+  if (!usernameOrigin || !usernameDestiny) {
+    return res.status(400).send('Se deben proporcionar los nombres de usuario de origen y destino');
   }
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ username: req.params.username });
+    const usuario = await Users.findOne({ username: usernameOrigin });
     if (!usuario) {
-      return res.status(404).send('Usuario no encontrado');
+      return res.status(404).send('Usuario origen no encontrado');
     }
 
-    // Obtener al amigo que se quiere eliminar
-    const amigo = await Users.findOne({ username: amigoUsername });
+    // Obtener al usuario que se quiere dejar de seguir
+    const amigo = await Users.findOne({ username: usernameDestiny });
     if (!amigo) {
-      return res.status(404).send('Amigo no encontrado');
+      return res.status(404).send('Usuario destino no encontrado');
     }
 
-    // Verificar si son amigos
-    if (!usuario.amigos.includes(amigoUsername)) {
-      return res.status(400).send('Este usuario no es tu amigo');
+    // Verificar si el usuario origen está siguiendo al destino
+    if (!usuario.siguiendo.includes(usernameDestiny)) {
+      return res.status(400).send('No estás siguiendo a este usuario');
     }
 
-    // Eliminar el amigo de la lista de amigos
-    usuario.amigos = usuario.amigos.filter(amigo => amigo !== amigoUsername);
-    amigo.amigos = amigo.amigos.filter(amigo => amigo !== req.params.username);
+    // Eliminar al destino de la lista de "siguiendo" del usuario origen
+    usuario.siguiendo = usuario.siguiendo.filter(amigo => amigo !== usernameDestiny);
+
+    // Eliminar al origen de la lista de "seguidores" del usuario destino
+    amigo.seguidores = amigo.seguidores.filter(seguidor => seguidor !== usernameOrigin);
 
     // Guardar los cambios en ambos usuarios
     await usuario.save();
     await amigo.save();
 
-    res.status(200).send('Amigo eliminado correctamente');
+    res.status(200).send('Usuario dejado de seguir correctamente');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al eliminar amigo');
+    res.status(500).send('Error al procesar la solicitud');
   }
 });
+
 
 // Comprobar si dos usuarios son amigos
 router.post('/comprobarAmistad', autenticarToken, async (req, res) => {
@@ -251,7 +256,7 @@ router.post('/comprobarAmistad', autenticarToken, async (req, res) => {
     }
 
     // Comprobar si son amigos
-    if (usuario.amigos.includes(amigoUsername)) {
+    if (usuario.siguiendo.includes(amigoUsername)) {
       return res.status(200).send({'result':"true"});
     } else {
       return res.status(200).send({'result':"false"})
@@ -259,6 +264,46 @@ router.post('/comprobarAmistad', autenticarToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Error al comprobar la amistad');
+  }
+});
+
+router.post('/follow', async (req, res) => {
+  const { usernameOrigin, usernameDestiny } = req.body;
+
+  try {
+      // Verificar que ambos usuarios existan
+      const userOrigin = await Users.findOne({ username: usernameOrigin });
+      const userDestiny = await Users.findOne({ username: usernameDestiny });
+
+      if (!userOrigin || !userDestiny) {
+          return res.status(404).json({
+              status: 'error',
+              message: 'Uno o ambos usuarios no existen',
+          });
+      }
+
+      // Evitar seguir al mismo usuario más de una vez
+      if (userDestiny.seguidores.includes(userOrigin._id)) {
+          return res.status(400).json({
+              status: 'error',
+              message: 'Ya sigues a este usuario',
+          });
+      }
+
+      // Agregar el ID del usuario que sigue al arreglo de "seguidores"
+      userDestiny.seguidores.push(usernameOrigin);
+      await userDestiny.save();
+
+      return res.status(200).json({
+          status: 'success',
+          message: 'Has comenzado a seguir a este usuario',
+      });
+  } catch (error) {
+      console.error('Error al seguir al usuario:', error);
+      return res.status(500).json({
+          status: 'error',
+          message: 'Ocurrió un error al intentar seguir al usuario',
+      });
   }
 });
 

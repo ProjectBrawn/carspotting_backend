@@ -88,11 +88,18 @@ async function seedDatabase() {
             }
         ]);
 
-        // Añadir amigos
-        usuarios[0].amigos.push(usuarios[0].username, usuarios[1].username, usuarios[2].username);
-        usuarios[1].amigos.push(usuarios[0].username);
-        usuarios[2].amigos.push(usuarios[0].username);
-
+        // Añadir siguiendo y seguidores
+        usuarios[0].siguiendo.push(usuarios[0].username, usuarios[1].username, usuarios[2].username);
+        usuarios[0].seguidores.push(usuarios[0].username); // Se sigue a sí mismo
+        usuarios[1].seguidores.push(usuarios[0].username);
+        usuarios[2].seguidores.push(usuarios[0].username);
+        
+        usuarios[1].siguiendo.push(usuarios[0].username);
+        usuarios[0].seguidores.push(usuarios[1].username);
+        
+        usuarios[2].siguiendo.push(usuarios[0].username);
+        usuarios[0].seguidores.push(usuarios[2].username);
+        
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
         console.log('Usuarios creados con éxito');

@@ -56,12 +56,11 @@ const userSchema = new mongoose.Schema({
             ref: 'Coche'
         }]
     },    
-    amigos: [{
+    siguiendo: [{
         type: String,
     }],
     seguidores: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        type: String,
     }],
     // sesion_activa: {
     //     type: Boolean,

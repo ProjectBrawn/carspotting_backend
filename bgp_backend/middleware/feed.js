@@ -5,7 +5,7 @@ const Medalla = require('../modelos/achievements');
 async function obtenerTodosCoches(fechaLimite = null) {
     try {
         // Primero, encontramos el usuario por su username
-        // const usuario = await User.findOne({ username }).select('amigos');
+        // const usuario = await User.findOne({ username }).select('siguiendo');
 
         // if (!usuario) {
         //     throw new Error('Usuario no encontrado');
@@ -33,11 +33,11 @@ async function obtenerTodosCoches(fechaLimite = null) {
 }
 
 
-// Método para obtener el feed de coches de amigos por username
+// Método para obtener el feed de coches de siguiendo por username
 async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
     try {
         // Primero, encontramos el usuario por su username
-        const usuario = await User.findOne({ username }).select('amigos');
+        const usuario = await User.findOne({ username }).select('siguiendo');
         
         if (!usuario) {
             throw new Error('Usuario no encontrado');
@@ -45,7 +45,7 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
 
         // Construimos el query base
         const query = {
-            username: { $in: usuario.amigos }
+            username: { $in: usuario.siguiendo }
         };
 
         // Si se proporciona una fecha límite, añadimos condición de fecha
@@ -70,12 +70,12 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
 
 
 // Ejemplos de uso:
-// 1. Obtener los últimos 20 coches de amigos
+// 1. Obtener los últimos 20 coches de siguiendo
 async function ejemploUso1() {
     const feedCoches = await obtenerFeedCoches('ID_DEL_USUARIO');
 }
 
-// 2. Obtener coches de amigos hasta una fecha específica
+// 2. Obtener coches de siguiendo hasta una fecha específica
 async function ejemploUso2() {
     const fechaLimite = new Date('2024-01-01');
     const feedCoches = await obtenerFeedCoches('ID_DEL_USUARIO', fechaLimite, 50);
@@ -84,10 +84,10 @@ async function ejemploUso2() {
 // 3. Método para paginación (por si quieres cargar más coches)
 async function obtenerFeedCochesPaginado(usuarioId, ultimaFecha = null, limite = 20) {
     try {
-        const usuario = await User.findById(usuarioId).select('amigos');
+        const usuario = await User.findById(usuarioId).select('siguiendo');
         
         const query = {
-            username: { $in: usuario.amigos }
+            username: { $in: usuario.siguiendo }
         };
 
         // Si se proporciona la última fecha, busca coches anteriores a esa fecha
