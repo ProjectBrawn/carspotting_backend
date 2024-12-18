@@ -1,29 +1,27 @@
 const mongoose = require('mongoose');
-const { CarDay, CarDayIndex } = require('./daily_car');  // Importa los modelos de coches e índice
-
+const { CarDay } = require('./daily_car'); // Modelo de coche diario
 
 async function getCarOfTheDay() {
     try {
-        // Obtén el índice actual del coche del día
-        const indexDoc = await CarDayIndex.findOne();
-        if (!indexDoc) {
-            console.log('Índice no encontrado');
+        // Obtén la fecha actual en formato YYYY-MM-DD
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        // Obtén el número total de coches
+        const totalCars = await CarDay.countDocuments();
+
+        if (totalCars === 0) {
+            console.log('No hay coches disponibles.');
             return;
         }
 
-        const carIndex = indexDoc.carIndex;
+        // Calcula el índice del coche basado en la fecha
+        const carIndex = Math.abs(currentDate.split('-').join('')) % totalCars;
 
         // Encuentra el coche correspondiente al índice
         const carOfTheDay = await CarDay.findOne().skip(carIndex);
 
         if (carOfTheDay) {
             console.log('Coche del día:', carOfTheDay);
-
-            // Actualiza el índice global para el siguiente día
-            const nextIndex = (carIndex + 1) % 10; // Asumiendo que tienes 10 coches
-            indexDoc.carIndex = nextIndex;
-            await indexDoc.save();
-            console.log(`Índice actualizado a: ${nextIndex}`);
         } else {
             console.log('No se encontró un coche para hoy.');
         }

@@ -4,6 +4,7 @@ const db = require('./config/db');
 const usersRoutes = require('./routes/usersRoutes');
 const postsRoutes = require('./routes/postsRoutes');
 const feedRoutes = require('./routes/feedRoutes');
+const carDayRoutes = require('./routes/carDayRoutes');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', usersRoutes);
 app.use('/posts', postsRoutes);
 app.use('/feed', feedRoutes);
+app.use('/carDay', carDayRoutes);
 
 
 app.listen(3000, () => {
