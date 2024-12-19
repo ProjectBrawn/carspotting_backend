@@ -109,7 +109,7 @@ async function seedDatabase() {
             {
                 marca: 'Toyota',
                 modelo: 'Supra MK4',
-                año: 1997,
+                anyo: 1997,
                 generacion: 'A80',
                 ubicacion: {
                     latitud: 40.7128,
@@ -129,7 +129,7 @@ async function seedDatabase() {
             {
                 marca: 'Nissan',
                 modelo: 'GTR R34',
-                año: 2002,
+                anyo: 2002,
                 generacion: 'BNR34',
                 ubicacion: {
                     latitud: 35.6762,
@@ -149,7 +149,7 @@ async function seedDatabase() {
             {
                 marca: 'Mazda',
                 modelo: 'RX-7',
-                año: 1995,
+                anyo: 1995,
                 generacion: 'FD3S',
                 ubicacion: {
                     latitud: 34.0522,
@@ -169,7 +169,7 @@ async function seedDatabase() {
             {
                 marca: 'Porsche',
                 modelo: '911 GT3',
-                año: 2022,
+                anyo: 2022,
                 generacion: '992',
                 ubicacion: {
                     latitud: 40.4168,
@@ -189,7 +189,7 @@ async function seedDatabase() {
             {
                 marca: 'Mclaren',
                 modelo: 'MP4/8A',
-                año: 1982,
+                anyo: 1982,
                 generacion: '992',
                 ubicacion: {
                     latitud: 40.5168,

@@ -29,10 +29,10 @@ router.get('/:id', autenticarToken, async (req, res) => {
 
 
 // router.post('/createCar', autenticarToken, async (req, res) => {
-//     const { marca, modelo, generacion, año, url_imagen, tipoCarroceria } = req.body;
+//     const { marca, modelo, generacion, anyo, url_imagen, tipoCarroceria } = req.body;
   
-//     if (!marca || !modelo || !generacion || !año) {
-//       return res.status(400).send('Los campos marca, modelo, generacion y año son obligatorios');
+//     if (!marca || !modelo || !generacion || !anyo) {
+//       return res.status(400).send('Los campos marca, modelo, generacion y anyo son obligatorios');
 //     }
   
 //     try {
@@ -40,7 +40,7 @@ router.get('/:id', autenticarToken, async (req, res) => {
 //         marca,
 //         modelo,
 //         generacion,
-//         año,
+//         anyo,
 //         url_imagen,     // Campo opcional
 //         tipoCarroceria  // Campo opcional
 //       });
@@ -105,9 +105,9 @@ router.post('/addComment', autenticarToken, async (req, res) => {
 });
 
 router.get('/:id/comments', autenticarToken, async (req, res) => {
-    print("la llammooooo")
+    console.log("la llammooooo")
     try {
-        print("dentroooo")
+        console.log("dentroooo")
         
         // Validar que el ID es un ObjectId válido
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -116,8 +116,8 @@ router.get('/:id/comments', autenticarToken, async (req, res) => {
 
         // Buscar el post por su ID
         const post = await Posts.findById(req.params.id);
-        print("el postt")
-        print(post)
+        console.log("el postt")
+        console.log(post)
         if (!post) {
             return res.status(404).send('Post no encontrado');
         }
@@ -130,6 +130,77 @@ router.get('/:id/comments', autenticarToken, async (req, res) => {
     }
 });
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/') // Asegúrate de que esta carpeta existe
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname)
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Modifica tu ruta para usar multer
+router.post('/postCars', autenticarToken, upload.single('imagen'), async (req, res) => {
+    console.log("Datos recibidos:");
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
+    
+    try {
+        const {
+            marca,
+            modelo,
+            anyo,
+            generacion,
+            ubicacion,
+            descripcion,
+            username,
+            medallas
+        } = req.body;
+        console.log("hasta aqui0") 
+        console.log(marca)
+        console.log(modelo)
+        console.log(anyo)
+        console.log(username)
+        console.log(req.file)
+        // Validar los campos obligatorios
+        if (!marca || !modelo || !anyo || !username || !req.file) {
+            return res.status(400).json({
+                error: 'Los campos marca, modelo, anyo, imagen y username son obligatorios.'
+            });
+        }
+        console.log("hasta aqui1")
+        // Crear un nuevo post
+        const nuevoPost = new Posts({
+            marca,
+            modelo,
+            anyo,
+            generacion,
+            ubicacion,
+            descripcion,
+            imagen: req.file.path, // Guarda la ruta del archivo
+            username,
+            medallas: medallas ? JSON.parse(medallas) : [],
+        });
+        
+        // Guardar en la base de datos
+        await nuevoPost.save();
+        console.log("hasta aqui2")
+        res.status(201).json({
+            mensaje: 'Coche publicado correctamente',
+            post: nuevoPost
+        });
+        console.log("hasta aqui3")
+    } catch (error) {
+        console.error('Error al publicar el coche:', error);
+        res.status(500).json({
+            error: 'Error interno del servidor',
+            detalles: error.message
+        });
+    }
+});
 
 module.exports = router;
 

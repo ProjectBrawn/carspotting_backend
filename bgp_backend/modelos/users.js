@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
         }],
         validate: {
             validator: function(v) {
-                return v.length <= 5; // Valida el tamaño del array completo
+                return v.length <= 5; // Valida el tamanyo del array completo
             },
             message: 'El garaje principal puede tener máximo 5 coches'
         }
