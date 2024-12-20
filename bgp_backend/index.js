@@ -5,6 +5,7 @@ const usersRoutes = require('./routes/usersRoutes');
 const postsRoutes = require('./routes/postsRoutes');
 const feedRoutes = require('./routes/feedRoutes');
 const carDayRoutes = require('./routes/carDayRoutes');
+const garajeRoutes = require('./routes/garajeRoutes');
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use('/posts', postsRoutes);
 // app.use('/postCars', postsRoutes);
 app.use('/feed', feedRoutes);
 app.use('/carDay', carDayRoutes);
+app.use('/garaje', garajeRoutes);
+
 
 
 app.listen(3000, () => {
