@@ -5,7 +5,6 @@ const { autenticarToken } = require('../middleware/auth');
 
 // Ruta para obtener el coche del día
 router.get('/', autenticarToken, async (req, res) => {
-  console.log("dentro del back")
     try {
         // Obtén la fecha actual en formato YYYY-MM-DD
         const currentDate = new Date().toISOString().split('T')[0];
@@ -22,10 +21,8 @@ router.get('/', autenticarToken, async (req, res) => {
 
         // Encuentra el coche correspondiente al índice
         const carOfTheDay = await CarDay.findOne().skip(carIndex);
-        console.log("dentro del back2")
         if (carOfTheDay) {
             // Responde con la información del coche del día
-            console.log("dentro del back3")
             res.json({
                 name: carOfTheDay.name,
                 image: carOfTheDay.image,
