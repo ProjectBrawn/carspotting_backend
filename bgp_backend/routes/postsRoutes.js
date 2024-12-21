@@ -28,34 +28,6 @@ router.get('/:id', autenticarToken, async (req, res) => {
 });
 
 
-// router.post('/createCar', autenticarToken, async (req, res) => {
-//     const { marca, modelo, generacion, anyo, url_imagen, tipoCarroceria } = req.body;
-  
-//     if (!marca || !modelo || !generacion || !anyo) {
-//       return res.status(400).send('Los campos marca, modelo, generacion y anyo son obligatorios');
-//     }
-  
-//     try {
-//       const nuevoCoche = new Posts({
-//         marca,
-//         modelo,
-//         generacion,
-//         anyo,
-//         url_imagen,     // Campo opcional
-//         tipoCarroceria  // Campo opcional
-//       });
-  
-//       // Guardar el coche en la base de datos
-//       await nuevoCoche.save();
-  
-//       // Responder con el coche creado
-//       res.status(201).send({ mensaje: 'Coche creado correctamente', coche: nuevoCoche });
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).send('Error al crear el coche');
-//     }
-//   });
-
 // Obtiene el feed de coches de amigos del usuario actual
 router.get('/', autenticarToken, async (req, res) => {
   try {
@@ -201,6 +173,7 @@ router.post('/postCars', autenticarToken, upload.single('imagen'), async (req, r
         });
     }
 });
+
 
 module.exports = router;
 

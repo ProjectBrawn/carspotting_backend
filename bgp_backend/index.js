@@ -5,6 +5,7 @@ const usersRoutes = require('./routes/usersRoutes');
 const postsRoutes = require('./routes/postsRoutes');
 const feedRoutes = require('./routes/feedRoutes');
 const carDayRoutes = require('./routes/carDayRoutes');
+const filterRoutes = require('./routes/filterRoutes');
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/users', usersRoutes);
 app.use('/posts', postsRoutes);
-// app.use('/postCars', postsRoutes);
+app.use('/filtrar', filterRoutes);
 app.use('/feed', feedRoutes);
 app.use('/carDay', carDayRoutes);
 
