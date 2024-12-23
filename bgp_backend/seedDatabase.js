@@ -200,7 +200,27 @@ async function seedDatabase() {
                 username: usuarios[1].username,
                 comentarios: [
                 ]
-            }
+            },
+            {
+                marca: 'Lamborghini',
+                modelo: 'Aventador',
+                anyo: 2005,
+                generacion: 'LP740',
+                ubicacion: {
+                    latitud: 41.7128,
+                    longitud: -74.0060,
+                    direccion: 'New York, NY'
+                },
+                imagen: 'https://cdn.businessinsider.es/sites/navi.axelspringer.es/public/media/image/2019/09/say-hello-lamborghini-aventador-svj-rosso-mimir-matte-red-paint-job.jpg?tf=3840x.jpg:large',
+                username: usuarios[0].username,
+                medallas: [medallas[0]._id],
+                comentarios: [
+                    {
+                        usuario: usuarios[1].username,
+                        texto: '¡Qué máquina!'
+                    }
+                ]
+            },
         ]);
 
         // Asignar coches a 'garaje_principal' de los usuarios
@@ -210,7 +230,7 @@ async function seedDatabase() {
         usuarios[3].garaje_principal = []; // Ayrton tiene este coche en su garaje
 
         // Asignar coches a 'spots' de los usuarios
-        usuarios[0].spots = [posts[1]._id]; // Juan tiene estos coches en spots
+        usuarios[0].spots = [posts[1]._id, posts[5]._id]; // Juan tiene estos coches en spots
         usuarios[1].spots = [posts[3]._id, posts[4]._id]; // María tiene estos coches en spots
         usuarios[2].spots = [posts[0]._id]; // Carlos tiene este coche en spots
         usuarios[3].spots = [posts[2]._id]; // Ayrton tiene este coche en spots

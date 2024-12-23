@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', usersRoutes);
 app.use('/posts', postsRoutes);
 app.use('/filtrar', filterRoutes);
-// app.use('/filtrarUsuarios', filterUsersRoutes);
+app.use('/filtrarUsuarios', filterUsersRoutes);
 app.use('/feed', feedRoutes);
 app.use('/carDay', carDayRoutes);
 app.use('/medallas', medalsRoutes);
