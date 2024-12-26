@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Token = require('../modelos/token');
 const Posts = require('../modelos/posts');
+const Users = require('../modelos/users');
 const {obtenerTodosCoches } = require('../middleware/posts');
 
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
@@ -102,69 +103,48 @@ router.get('/:id/comments', autenticarToken, async (req, res) => {
     }
 });
 
-const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/') // Asegúrate de que esta carpeta existe
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname)
-    }
-});
-
-const upload = multer({ storage: storage });
 
 // Modifica tu ruta para usar multer
-router.post('/postCars', autenticarToken, upload.single('imagen'), async (req, res) => {
-    console.log("Datos recibidos:");
-    console.log("Body:", req.body);
-    console.log("File:", req.file);
-    
+router.post('/postCars', autenticarToken, async (req, res) => {    
     try {
         const {
             marca,
             modelo,
-            anyo,
-            generacion,
-            ubicacion,
-            descripcion,
+            year,
+            //descripcion,
+            location,
             username,
-            medallas
+            imageUrl
         } = req.body;
-        console.log("hasta aqui0") 
-        console.log(marca)
-        console.log(modelo)
-        console.log(anyo)
-        console.log(username)
-        console.log(req.file)
         // Validar los campos obligatorios
-        if (!marca || !modelo || !anyo || !username || !req.file) {
-            return res.status(400).json({
-                error: 'Los campos marca, modelo, anyo, imagen y username son obligatorios.'
-            });
+        if (!marca || !modelo || !year || !location || !username || !imageUrl) {
+            return res.status(400).json({ error: 'Se requieren todos los campos' });
         }
-        console.log("hasta aqui1")
         // Crear un nuevo post
         const nuevoPost = new Posts({
             marca,
             modelo,
-            anyo,
-            generacion,
-            ubicacion,
-            descripcion,
-            imagen: req.file.path, // Guarda la ruta del archivo
+            anyo: year,
+            //generacion: req.body.generacion,
+            //descripcion,
+            //ubicacion: location,
             username,
-            medallas: medallas ? JSON.parse(medallas) : [],
+            imagen:imageUrl, // Guarda la ruta del archivo
+            //medallas: medallas ? JSON.parse(medallas) : [],
         });
         
         // Guardar en la base de datos
         await nuevoPost.save();
-        console.log("hasta aqui2")
+        //Ahora quiero saber cual era el objectid del post que acabo de guardar
+        //Actualizar el campo posts del usuario
+        const user = await Users.findOne({ username: username });
+        user.spots.push(nuevoPost._id);
+        await user.save();
+    
         res.status(201).json({
             mensaje: 'Coche publicado correctamente',
             post: nuevoPost
         });
-        console.log("hasta aqui3")
     } catch (error) {
         console.error('Error al publicar el coche:', error);
         res.status(500).json({

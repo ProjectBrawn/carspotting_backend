@@ -225,7 +225,7 @@ async function seedDatabase() {
 
         // Asignar coches a 'garaje_principal' de los usuarios
         usuarios[0].garaje_principal = [posts[1]._id]; // Juan tiene estos coches en su garaje
-        usuarios[1].garaje_principal = [posts[3]._id, posts[4]._id]; // María tiene estos coches en su garaje
+        usuarios[1].garaje_principal = [posts[3]._id]; // María tiene estos coches en su garaje
         usuarios[2].garaje_principal = [posts[0]._id]; // Carlos tiene este coche en su garaje
         usuarios[3].garaje_principal = []; // Ayrton tiene este coche en su garaje
 

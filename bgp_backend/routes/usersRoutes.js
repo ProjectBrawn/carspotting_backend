@@ -23,7 +23,7 @@ router.get('/:username', autenticarToken, async (req, res) => {
 
 //Actualizar info de un usuario
 router.put('/:username', autenticarToken, async (req, res) => {
-  const { username: newUsername, descripcion } = req.body;
+  const { username: newUsername, descripcion, imageUrl } = req.body;
 
   try {
     // Buscar el usuario por el parámetro de ruta
@@ -42,6 +42,10 @@ router.put('/:username', autenticarToken, async (req, res) => {
       return res.status(400).send('El nombre de usuario debe ser un texto válido.');
     }
 
+    if (imageUrl && typeof imageUrl !== 'string') {
+      return res.status(400).send('La URL de la imagen debe ser un texto válido.');
+    }
+
     // Verificar si el nuevo username ya está en uso
     if (newUsername && newUsername !== user.username) {
       const existingUser = await Users.findOne({ username: newUsername });
@@ -53,6 +57,7 @@ router.put('/:username', autenticarToken, async (req, res) => {
     // Actualizar los campos
     if (descripcion) user.descripcion = descripcion;
     if (newUsername) user.username = newUsername;
+    if (imageUrl) user.fotoPerfil = imageUrl;
 
     // Guardar los cambios
     await user.save();
@@ -104,6 +109,7 @@ router.post('/createUser', async (req, res) => {
 
 // Endpoint de Login (email o username)
 router.post('/login', async (req, res) => {
+  console.log("Voy a iniciar sesion");
   const { emailOrUsername, password } = req.body;
 
   // Verifica si ambos campos están presentes
