@@ -8,6 +8,8 @@ const { OpenAI } = require("openai");
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY});
 
 async function detectCarByUrl(url) {
+  console.log("API Key:", process.env.OPENAI_API_KEY);
+  console.log("denrto")
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
     messages: [
@@ -22,15 +24,16 @@ async function detectCarByUrl(url) {
           {
             type: "image_url",
             image_url: {
-               "url": "https://spots.ag/2021/07/30/ferrari-f40lm-c493730072021201906_1.jpg?1627669164",
-              //"url": url,
+              //  "url": "https://spots.ag/2021/07/30/ferrari-f40lm-c493730072021201906_1.jpg?1627669164",
+              "url": url,
             },
           },
         ],
       },
     ],
   });
-
+  console.log("algooo")
+  console.log(completion)
   return completion.choices[0].message.content;
 }
 
