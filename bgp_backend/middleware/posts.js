@@ -2,33 +2,39 @@ const Posts = require('../modelos/posts');
 
 async function obtenerTodosCoches(fechaLimite = null) {
     try {
-        // Primero, encontramos el usuario por su username
-        // const usuario = await User.findOne({ username }).select('amigos');
-
-        // if (!usuario) {
-        //     throw new Error('Usuario no encontrado');
-        // }
-
         // Construimos el query base
         const query = {};
 
-        // Si se proporciona una fecha límite, añadimos condición de fecha
         if (fechaLimite) {
-            query.fecha_captura = { $lte: fechaLimite };
+            // Convertimos fechaLimite a un objeto Date
+            const fechaLimiteDate = new Date(fechaLimite);
+
+            // Validamos que sea una fecha válida
+            if (isNaN(fechaLimiteDate)) {
+                throw new Error('El formato de fecha es inválido');
+            }
+
+            // Calculamos el rango de 24 horas antes
+            const fechaInicio = new Date(fechaLimiteDate.getTime() - 24 * 60 * 60 * 1000);
+
+            // Agregamos la condición al query para el rango de fechas
+            query.fecha_captura = { 
+                $gte: fechaInicio, // Fecha mínima: 24h antes
+                $lte: fechaLimiteDate // Fecha máxima: fechaLimite
+            };
         }
 
-        // Buscamos los coches de todos los usuarios
+        // Buscamos los coches dentro del rango
         const coches = await Posts.find(query)
-            .sort({ fecha_captura: -1 }) // Ordenar de más reciente a más antiguo
-            // .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
-            // .lean(); // Convierte a objeto plano para mejor rendimiento
+            .sort({ fecha_captura: -1 }); // Ordenar de más reciente a más antiguo
 
         return coches;
     } catch (error) {
-        console.error('Error al obtener feed de posts:', error);
+        console.error('Error al obtener coches:', error);
         throw error;
     }
 }
+
 
 module.exports = {
     obtenerTodosCoches

@@ -31,8 +31,11 @@ router.get('/:id', autenticarToken, async (req, res) => {
 
 // Obtiene el feed de coches de amigos del usuario actual
 router.get('/', autenticarToken, async (req, res) => {
+    console.log("obteniendo todos los coches")
+    console.log(req.query.fechaLimite)
   try {
       const fechaLimite = req.query.fechaLimite ? new Date(req.query.fechaLimite) : null;
+      console.log(fechaLimite)
       const posts = await obtenerTodosCoches(fechaLimite);
       res.status(200).json(posts);
   } catch (error) {
