@@ -31,11 +31,8 @@ router.get('/:id', autenticarToken, async (req, res) => {
 
 // Obtiene el feed de coches de amigos del usuario actual
 router.get('/', autenticarToken, async (req, res) => {
-    console.log("obteniendo todos los coches")
-    console.log(req.query.fechaLimite)
   try {
-      const fechaLimite = req.query.fechaLimite ? new Date(req.query.fechaLimite) : null;
-      console.log(fechaLimite)
+      const fechaLimite = new Date(); // Hora actual
       const posts = await obtenerTodosCoches(fechaLimite);
       res.status(200).json(posts);
   } catch (error) {
@@ -157,6 +154,34 @@ router.post('/postCars', autenticarToken, async (req, res) => {
     }
 });
 
+router.delete('/:id', autenticarToken, async (req, res) => {
+    try {
+        // Verificar que el ID es válido
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: 'ID no válido' });
+        }
+
+        // Buscar el post
+        const post = await Posts.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({ error: 'Post no encontrado' });
+        }
+
+        // Eliminar el post de la lista de spots del usuario
+        await Users.updateOne(
+            { username: post.username },
+            { $pull: { spots: post._id } }
+        );
+
+        // Eliminar el post
+        await Posts.findByIdAndDelete(req.params.id);
+
+        return res.status(200).json({ message: 'Post eliminado correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar el post:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 module.exports = router;
 
