@@ -53,6 +53,8 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
             query.fecha_captura = { $lte: fechaLimite };
         }
 
+        console.log('Query:', query);
+
         // Buscamos los coches
         const posts = await Post.find(query)
             .sort({ fecha_captura: -1 }) // Ordenar de más reciente a más antiguo
