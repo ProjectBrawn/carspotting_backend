@@ -4,7 +4,7 @@ const router = express.Router();
 const Token = require('../modelos/token');
 const Posts = require('../modelos/posts');
 const Users = require('../modelos/users');
-const {obtenerTodosCoches } = require('../middleware/posts');
+const {obtenerTodosCoches, getCityAndCountry } = require('../middleware/posts');
 
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
 
@@ -111,7 +111,6 @@ router.post('/postCars', autenticarToken, async (req, res) => {
             marca,
             modelo,
             year,
-            //descripcion,
             location,
             username,
             imageUrl
@@ -120,6 +119,22 @@ router.post('/postCars', autenticarToken, async (req, res) => {
         if (!marca || !modelo || !year || !location || !username || !imageUrl) {
             return res.status(400).json({ error: 'Se requieren todos los campos' });
         }
+        
+        //La separo por la coma y me quedo como el primer elemento como latitud y el segundo como longitud
+        const locationArray = location.split(",");
+        const latitud = locationArray[0];
+        const longitud = locationArray[1];
+        //Entonces ahora lo que tenemos que hacer es una llamada para obtener la ciudad y el pais
+        const locationData = await getCityAndCountry(latitud, longitud);
+        //Construimos un string con la ciudad y el pais
+        const locationString = `${locationData.city}, ${locationData.country}`;
+        //Ahora como ubicacion es un objeto, comvertimos la lat y long en un Number
+        const localizacion = {
+            latitud: parseFloat(latitud),
+            longitud: parseFloat(longitud),
+            direccion: locationString
+        }
+
         // Crear un nuevo post
         const nuevoPost = new Posts({
             marca,
@@ -127,7 +142,7 @@ router.post('/postCars', autenticarToken, async (req, res) => {
             anyo: year,
             //generacion: req.body.generacion,
             //descripcion,
-            //ubicacion: location,
+            ubicacion: localizacion,
             username,
             imagen:imageUrl, // Guarda la ruta del archivo
             //medallas: medallas ? JSON.parse(medallas) : [],

@@ -1,4 +1,5 @@
 const Posts = require('../modelos/posts');
+const axios = require('axios');
 
 async function obtenerTodosCoches(fechaLimite = null) {
     try {
@@ -40,7 +41,43 @@ async function obtenerTodosCoches(fechaLimite = null) {
     }
 }
 
+async function getCityAndCountry(lat, lon) {
+    const url = `https://nominatim.openstreetmap.org/search.php?q=${lat},${lon}&format=jsonv2`;
+
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                'User-Agent': 'GTSpotters/1.0 (projectbrawn@gmail.com)' // Cambia el correo a uno válido
+            }
+        });
+
+        const data = response.data;
+
+        if (data.length > 0) {
+            // Nominatim devuelve un array de resultados, tomamos el primero.
+            const result = data[0];
+            const displayName = result.display_name || '';
+
+            // Extraemos la ciudad y el país del campo "display_name"
+            const parts = displayName.split(',');
+            const country = parts[parts.length - 1]?.trim() || null;
+            const city = parts[parts.length - 3]?.trim() || null;
+
+            return { city, country };
+        } else {
+            throw new Error('No se encontraron resultados para las coordenadas proporcionadas.');
+        }
+    } catch (error) {
+        console.error('Error al obtener ciudad y país:', error.message);
+        throw error;
+    }
+}
+
+
+
+
 module.exports = {
-    obtenerTodosCoches
+    obtenerTodosCoches,
+    getCityAndCountry
 };
 

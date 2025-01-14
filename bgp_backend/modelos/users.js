@@ -6,10 +6,6 @@ const userSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    apellidos: { 
-        type: String, 
-        required: true 
-    },
     username: { 
         type: String, 
         required: true, 
@@ -33,6 +29,14 @@ const userSchema = new mongoose.Schema({
     fotoPerfil: { 
         type: String, 
         default: 'https://i.etsystatic.com/35372836/r/il/70df1f/5861902788/il_fullxfull.5861902788_odt2.jpg' 
+    },
+    sexo: {
+        type: String,
+        required: true,
+    },
+    anyo_nacimiento: {
+        type: String,
+        required: true,
     },
     puntos_experiencia: { 
         type: Number, 
@@ -62,10 +66,10 @@ const userSchema = new mongoose.Schema({
     seguidores: [{
         type: String,
     }],
-    // sesion_activa: {
-    //     type: Boolean,
-    //     default: false
-    // },
+    sesion_activa: {
+        type: Boolean,
+        default: false
+    },
     // estado_cuenta: {
     //     type: String,
     //     enum: ['activa', 'suspendida', 'eliminada'],
