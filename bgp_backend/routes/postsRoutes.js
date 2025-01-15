@@ -111,12 +111,14 @@ router.post('/postCars', autenticarToken, async (req, res) => {
             marca,
             modelo,
             year,
+            generacion,
+            nacionalidad,
             location,
             username,
             imageUrl
         } = req.body;
         // Validar los campos obligatorios
-        if (!marca || !modelo || !year || !location || !username || !imageUrl) {
+        if (!marca || !modelo || !year || !location || !username || !imageUrl || !nacionalidad || !generacion) {
             return res.status(400).json({ error: 'Se requieren todos los campos' });
         }
         
@@ -140,8 +142,8 @@ router.post('/postCars', autenticarToken, async (req, res) => {
             marca,
             modelo,
             anyo: year,
-            //generacion: req.body.generacion,
-            //descripcion,
+            generacion: generacion,
+            nacionalidad: nacionalidad,
             ubicacion: localizacion,
             username,
             imagen:imageUrl, // Guarda la ruta del archivo

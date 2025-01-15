@@ -46,6 +46,7 @@ async function seedDatabase() {
                 email: 'juan@example.com',
                 sexo: 'Hombre',
                 anyo_nacimiento: '1990',
+                pais: 'España',
                 password: await hashPassword('password123'),
                 descripcion: 'Amante de los coches clásicos',
                 puntos_experiencia: 0,
@@ -59,6 +60,7 @@ async function seedDatabase() {
                 email: 'maria@example.com',
                 sexo: 'Mujer',
                 anyo_nacimiento: '1995',
+                pais: 'España',
                 password: await hashPassword('password456'),
                 descripcion: 'Fan de los deportivos',
                 fotoPerfil: 'https://randomuser.me/api/portraits/women/1.jpg',
@@ -73,6 +75,7 @@ async function seedDatabase() {
                 email: 'carlos@example.com',
                 sexo: 'Hombre',
                 anyo_nacimiento: '1985',
+                pais: 'España',
                 password: await hashPassword('password789'),
                 descripcion: 'Coleccionista de autos japoneses',
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/2.jpg',
@@ -87,6 +90,7 @@ async function seedDatabase() {
                 email: 'ayrton@example.com',
                 sexo: 'Hombre',
                 anyo_nacimiento: '1960',
+                pais: 'Brasil',
                 password: await hashPassword('password789'),
                 descripcion: 'Best f1 driver ever',
                 fotoPerfil: 'https://randomuser.me/api/portraits/men/5.jpg',
@@ -119,6 +123,7 @@ async function seedDatabase() {
                 modelo: 'Supra MK4',
                 anyo: 1997,
                 generacion: 'A80',
+                nacionalidad: 'Japon',
                 ubicacion: {
                     latitud: 40.7128,
                     longitud: -74.0060,
@@ -139,6 +144,7 @@ async function seedDatabase() {
                 modelo: 'GTR R34',
                 anyo: 2002,
                 generacion: 'BNR34',
+                nacionalidad: 'Japon',
                 ubicacion: {
                     latitud: 35.6762,
                     longitud: 139.6503,
@@ -159,6 +165,7 @@ async function seedDatabase() {
                 modelo: 'RX-7',
                 anyo: 1995,
                 generacion: 'FD3S',
+                nacionalidad: 'Japon',
                 ubicacion: {
                     latitud: 34.0522,
                     longitud: -118.2437,
@@ -178,6 +185,7 @@ async function seedDatabase() {
                 marca: 'Porsche',
                 modelo: '911 GT3',
                 anyo: 2022,
+                nacionalidad: 'Alemania',
                 generacion: '992',
                 ubicacion: {
                     latitud: 40.4168,
@@ -198,6 +206,7 @@ async function seedDatabase() {
                 marca: 'Mclaren',
                 modelo: 'MP4/8A',
                 anyo: 1982,
+                nacionalidad: 'Reino Unido',
                 generacion: '992',
                 ubicacion: {
                     latitud: 40.5168,
@@ -213,6 +222,7 @@ async function seedDatabase() {
                 marca: 'Lamborghini',
                 modelo: 'Aventador',
                 anyo: 2005,
+                nacionalidad: 'Italia',
                 generacion: 'LP740',
                 ubicacion: {
                     latitud: 41.7128,

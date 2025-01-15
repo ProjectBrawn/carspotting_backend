@@ -82,10 +82,10 @@ router.put('/:username', autenticarToken, async (req, res) => {
 });
 
 router.post('/createUser', async (req, res) => {
-  const { nombre, apellidos, username, email, sexo, anyo_nacimiento, password } = req.body;
+  const { nombre, apellidos, username, email, sexo, anyo_nacimiento, pais, password } = req.body;
 
   // Validaciones básicas
-  if (!nombre || !apellidos || !email || !password || !username || !sexo || !anyo_nacimiento) {
+  if (!nombre || !apellidos || !email || !password || !username || !sexo || !anyo_nacimiento || !pais) {
     return res.status(400).send({ status: 'failed', message: "Todos campos deben ser completados" });
   }
 
@@ -108,6 +108,7 @@ router.post('/createUser', async (req, res) => {
       email,
       sexo,
       anyo_nacimiento,
+      pais,
       password: hashedPassword,
       siguiendo: [username]
     });

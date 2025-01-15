@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    pais: {
+        type: String,
+        required: true,
+    },
     puntos_experiencia: { 
         type: Number, 
         default: 0 

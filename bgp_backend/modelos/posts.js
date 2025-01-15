@@ -15,7 +15,12 @@ const postSchema = new mongoose.Schema({
         required: true 
     },
     generacion: { 
-        type: String 
+        type: String ,
+        required: true
+    },
+    nacionalidad: {
+        type: String,    
+        required: true
     },
     ubicacion: {
         latitud: Number,
