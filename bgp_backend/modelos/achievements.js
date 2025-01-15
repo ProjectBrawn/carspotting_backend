@@ -11,10 +11,6 @@ const medallaSchema = new mongoose.Schema({
     icono: {
         type: String
     },
-    puntos: {
-        type: Number,
-        default: 0
-    },
     fecha_creacion: { 
         type: Date, default: Date.now 
     },
