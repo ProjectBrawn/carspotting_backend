@@ -37,14 +37,16 @@ async function obtenerCocheDelDia() {
 async function asignarMedallas(coche) {
     const medallas = [];
     const cocheDelDia = await obtenerCocheDelDia(); // Obtener el coche del día
-    console.log('coche');
-    console.log(coche);
-    console.log('cocheDelDia');
-    console.log(cocheDelDia);
 
     // Comprobamos si el coche del día coincide con el coche publicado (marca y modelo)
     // Comprobamos si el nombre del coche del día está contenido en la concatenación de coche.marca + coche.modelo
-    if (cocheDelDia?.nombre?.toLowerCase().includes(`${coche.marca.toLowerCase()} ${coche.modelo.toLowerCase()}`)) {
+    const eyyy = (`${coche.marca.toLowerCase()} ${coche.modelo.toLowerCase()}`.trim().includes(cocheDelDia?.name?.toLowerCase().trim()))
+    console.log('eyyy');
+    console.log(eyyy);
+    console.log("coches, normal y del dia");
+    console.log(`${coche.marca.toLowerCase()} ${coche.modelo.toLowerCase()}`.trim())
+    console.log(cocheDelDia?.name?.toLowerCase().trim())
+    if (`${coche.marca.toLowerCase()} ${coche.modelo.toLowerCase()}`.trim().includes(cocheDelDia?.name?.toLowerCase().trim()))        {
         const medallaCocheDelDia = await Medalla.findOne({ nombre: 'Car of the Day' });
         if (medallaCocheDelDia) {
             medallas.push(medallaCocheDelDia._id);
@@ -124,7 +126,7 @@ async function asignarMedallas(coche) {
     }
 
     // Medalla: Silent Luxury (Rolls Royce, Bentley, Mercedes Maybach)
-    const silentLuxuryBrands = ['rolls royce', 'bentley', 'mercedes maybach'];
+    const silentLuxuryBrands = ['rolls royce', 'bentley', 'maybach'];
     if (silentLuxuryBrands.includes(coche.marca.toLowerCase())) {
         const silentLuxury = await Medalla.findOne({ nombre: 'Silent Luxury' });
         if (silentLuxury) medallas.push(silentLuxury._id);
@@ -137,10 +139,8 @@ async function asignarMedallas(coche) {
     }
 
     // Medalla: Ferrari Repoker (Ferrari F40, LaFerrari, Enzo, 288 GTO, F50)
-    const ferrariRepokerModels = ['ferrari f40', 'laferrari', 'enzo', '288 gto', 'f50'];
-    const ola = ferrariRepokerModels.includes(coche.marca.toLowerCase() + " " + coche.modelo.toLowerCase());
-    console.log(ola);
-    if (ferrariRepokerModels.includes(coche.marca.toLowerCase() + " " + coche.modelo.toLowerCase())) {
+    const ferrariRepokerModels = ['f40', 'laferrari', 'enzo', '288 gto', 'f50'];
+    if (ferrariRepokerModels.includes(coche.modelo.toLowerCase())) {
         const ferrariRepoker = await Medalla.findOne({ nombre: 'Ferrari Repoker' });
         if (ferrariRepoker) medallas.push(ferrariRepoker._id);
     }
