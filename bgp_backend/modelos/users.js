@@ -82,6 +82,10 @@ const userSchema = new mongoose.Schema({
     fecha_creacion: {
         type: Date,
         default: Date.now
+    },
+    origin: {
+        type: String,
+        default: 'app'
     }
 });
 
