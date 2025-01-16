@@ -4,7 +4,12 @@ const router = express.Router();
 const Token = require('../modelos/token');
 const Posts = require('../modelos/posts');
 const Users = require('../modelos/users');
-const {obtenerTodosCoches, getCityAndCountry } = require('../middleware/posts');
+const Medalla = require('../modelos/achievements.js');
+
+const { obtenerTodosCoches, getCityAndCountry } = require('../middleware/posts');
+const { asignarMedallas } = require('../middleware/medalls');
+
+
 
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
 
@@ -31,57 +36,57 @@ router.get('/:id', autenticarToken, async (req, res) => {
 
 // Obtiene el feed de coches de amigos del usuario actual
 router.get('/', autenticarToken, async (req, res) => {
-  try {
-      const fechaLimite = new Date(); // Hora actual
-      const posts = await obtenerTodosCoches(fechaLimite);
-      res.status(200).json(posts);
-  } catch (error) {
-      console.error('Detailed error al obtener todos los coches:', error);
-      res.status(500).json({ 
-          error: 'Error al obtener todos los posts',
-          details: error.message 
-      });
-  }
+    try {
+        const fechaLimite = new Date(); // Hora actual
+        const posts = await obtenerTodosCoches(fechaLimite);
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error('Detailed error al obtener todos los coches:', error);
+        res.status(500).json({
+            error: 'Error al obtener todos los posts',
+            details: error.message
+        });
+    }
 });
 
 
 router.post('/addComment', autenticarToken, async (req, res) => {
-  try {
-      const { id, texto, username } = req.body; // ID del objeto y texto del comentario
+    try {
+        const { id, texto, username } = req.body; // ID del objeto y texto del comentario
 
 
-      // Verificar que se pasaron los datos necesarios
-      if (!id || !texto || !username) {
-          return res.status(400).json({ error: 'Se requiere el ID del objeto, el texto del comentario y el usuario' });
-      }
+        // Verificar que se pasaron los datos necesarios
+        if (!id || !texto || !username) {
+            return res.status(400).json({ error: 'Se requiere el ID del objeto, el texto del comentario y el usuario' });
+        }
 
-      // Buscar el objeto en la base de datos
-      const post = await Posts.findById(id);
-      if (!post) {
-          return res.status(404).json({ error: 'Post no encontrado' });
-      }
+        // Buscar el objeto en la base de datos
+        const post = await Posts.findById(id);
+        if (!post) {
+            return res.status(404).json({ error: 'Post no encontrado' });
+        }
 
-      // Agregar el nuevo comentario
-      const nuevoComentario = {
-          usuario: username,
-          texto:texto
-      };
+        // Agregar el nuevo comentario
+        const nuevoComentario = {
+            usuario: username,
+            texto: texto
+        };
 
-      post.comentarios.push(nuevoComentario); // Agrega el comentario al array
-      await post.save(); // Guarda los cambios
+        post.comentarios.push(nuevoComentario); // Agrega el comentario al array
+        await post.save(); // Guarda los cambios
 
-      return res.status(200).json({ message: 'Comentario agregado con éxito', comentario: nuevoComentario });
-  } catch (error) {
-      console.error('Error al agregar comentario:', error);
-      return res.status(500).json({ error: 'Error interno del servidor' });
-  }
+        return res.status(200).json({ message: 'Comentario agregado con éxito', comentario: nuevoComentario });
+    } catch (error) {
+        console.error('Error al agregar comentario:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
 });
 
 router.get('/:id/comments', autenticarToken, async (req, res) => {
     console.log("la llammooooo")
     try {
         console.log("dentroooo")
-        
+
         // Validar que el ID es un ObjectId válido
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).send('ID no válido');
@@ -105,7 +110,7 @@ router.get('/:id/comments', autenticarToken, async (req, res) => {
 
 
 // Modifica tu ruta para usar multer
-router.post('/postCars', autenticarToken, async (req, res) => {    
+router.post('/postCars', autenticarToken, async (req, res) => {
     try {
         const {
             marca,
@@ -121,7 +126,7 @@ router.post('/postCars', autenticarToken, async (req, res) => {
         if (!marca || !modelo || !year || !location || !username || !imageUrl || !nacionalidad || !generacion) {
             return res.status(400).json({ error: 'Se requieren todos los campos' });
         }
-        
+
         //La separo por la coma y me quedo como el primer elemento como latitud y el segundo como longitud
         const locationArray = location.split(",");
         const latitud = locationArray[0];
@@ -137,19 +142,48 @@ router.post('/postCars', autenticarToken, async (req, res) => {
             direccion: locationString
         }
 
-        // Crear un nuevo post
-        const nuevoPost = new Posts({
+        // Crear un objeto con los datos del coche
+        const coche = {
             marca,
             modelo,
             anyo: year,
             generacion: generacion,
             nacionalidad: nacionalidad,
             ubicacion: localizacion,
+
             username,
-            imagen:imageUrl, // Guarda la ruta del archivo
-            //medallas: medallas ? JSON.parse(medallas) : [],
-        });
+            imagen: imageUrl
+        };
+
+        console.log("antesss")
+        // Llamar a la función para asignar medallas
+        const medallasAsignadas = await asignarMedallas(coche);
+        const medallasNombres = await Medalla.find({
+            '_id': { $in: medallasAsignadas }
+        }).select('nombre');
         
+        // medallasNombres será un array de objetos, para tener solo los nombres:
+        const nombresArray = medallasNombres.map(medalla => medalla.nombre);
+
+        console.log('Medallas asignadas:', medallasAsignadas);
+        // Crear un nuevo post con las medallas asignadas
+        const nuevoPost = new Posts({
+            ...coche,
+            medallas: medallasAsignadas,
+        });
+        // Crear un nuevo post
+        // const nuevoPost = new Posts({
+        //     marca,
+        //     modelo,
+        //     anyo: year,
+        //     generacion: generacion,
+        //     nacionalidad: nacionalidad,
+        //     ubicacion: localizacion,
+        //     username,
+        //     imagen: imageUrl, // Guarda la ruta del archivo
+        //     //medallas: medallas ? JSON.parse(medallas) : [],
+        // });
+
         // Guardar en la base de datos
         await nuevoPost.save();
         //Ahora quiero saber cual era el objectid del post que acabo de guardar
@@ -157,11 +191,12 @@ router.post('/postCars', autenticarToken, async (req, res) => {
         const user = await Users.findOne({ username: username });
         user.spots.push(nuevoPost._id);
         await user.save();
-    
+
         res.status(201).json({
             mensaje: 'Coche publicado correctamente',
-            post: nuevoPost
-        });
+            post: nuevoPost,
+            medallas: nombresArray // Incluir las medallas asignadas en la respuesta
+        });   
     } catch (error) {
         console.error('Error al publicar el coche:', error);
         res.status(500).json({
@@ -201,4 +236,3 @@ router.delete('/:id', autenticarToken, async (req, res) => {
 });
 
 module.exports = router;
-

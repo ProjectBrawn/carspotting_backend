@@ -23,8 +23,8 @@ async function detectCarByUrl(url) {
           {
             type: "image_url",
             image_url: {
-                //"url": "https://spots.ag/2021/07/30/ferrari-f40lm-c493730072021201906_1.jpg?1627669164",
-              "url": url,
+               "url": "https://spots.ag/2021/07/30/ferrari-f40lm-c493730072021201906_1.jpg?1627669164",
+              //"url": url,
             },
           },
         ],

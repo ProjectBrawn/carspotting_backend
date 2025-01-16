@@ -26,15 +26,57 @@ async function seedDatabase() {
         // Crear algunas medallas de ejemplo
         const medallas = await Medalla.create([
             {
-                nombre: 'Primer Spoteo',
-                descripcion: 'Primera foto de coche capturada',
-                puntos: 10
+                nombre: 'Holly Trinity',
+                descripcion: 'McLaren P1, Porsche 918, and LaFerrari, the holy trinity of hypercars that define an era.',
             },
             {
-                nombre: 'Coleccionista',
-                descripcion: 'Captura 10 coches diferentes',
-                puntos: 50
-            }
+                nombre: 'American Icon',
+                descripcion: 'Mustang, Camaro, Challenger, and other iconic American models.',
+            },
+            {
+                nombre: 'JDM Empire',
+                descripcion: 'Legendary Japanese models like RX7, RX8, Supra, and more.',
+            },
+            {
+                nombre: 'Swedish Host',
+                descripcion: 'Koenigsegg cars, the Swedish supercar brand.',
+            },
+            {
+                nombre: 'Neck Breaker',
+                descripcion: 'Cars that awe with their speed, like Ferrari 488, Lamborghini Huracán, Porsche 911, and many more.',
+            },
+            {
+                nombre: 'Martini Vodka',
+                descripcion: '007, Aston Martin, British luxury.',
+            },
+            {
+                nombre: 'No Path Needed',
+                descripcion: 'Off-road and 4x4 vehicles that dominate any terrain, like the Jeep Wrangler, Toyota Land Cruiser, and Land Rover.',
+            },
+            {
+                nombre: 'Washing Machine',
+                descripcion: 'Tesla, the electric cars revolutionizing the industry.',
+            },
+            {
+                nombre: 'Silent Luxury',
+                descripcion: 'Rolls Royce, Bentley, and Mercedes Maybach, luxury cars with low profile.',
+            },
+            {
+                nombre: 'Everyones Favorite',
+                descripcion: 'Porsche 911 GT3RS, a fan favorite in the world of high-performance cars.',
+            },
+            {
+                nombre: 'Ferrari Repoker',
+                descripcion: 'No word needed, Ferrari is Ferrari.',
+            },
+            {
+                nombre: 'German Engineer',
+                descripcion: 'Mercedes, BMW, and Audi, German brands known for precision engineering.',
+            },
+            {
+                nombre: 'Car of the Day',
+                descripcion: 'Get the car of the day and show your spotting skills.',
+            },
         ]);
 
         // Crear usuarios
