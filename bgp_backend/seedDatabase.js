@@ -135,16 +135,16 @@ async function seedDatabase() {
         ]);
 
         // Añadir siguiendo y seguidores
-        usuarios[0].siguiendo.push(usuarios[0].username, usuarios[1].username, usuarios[2].username);
-        usuarios[0].seguidores.push(usuarios[0].username); // Se sigue a sí mismo
-        usuarios[1].seguidores.push(usuarios[0].username);
-        usuarios[2].seguidores.push(usuarios[0].username);
+        usuarios[0].siguiendo.push(usuarios[0]._id, usuarios[1]._id, usuarios[2]._id);
+        usuarios[0].seguidores.push(usuarios[0]._id); // Se sigue a sí mismo
+        usuarios[1].seguidores.push(usuarios[0]._id);
+        usuarios[2].seguidores.push(usuarios[0]._id);
         
-        usuarios[1].siguiendo.push(usuarios[0].username);
-        usuarios[0].seguidores.push(usuarios[1].username);
+        usuarios[1].siguiendo.push(usuarios[0]._id);
+        usuarios[0].seguidores.push(usuarios[1]._id);
         
-        usuarios[2].siguiendo.push(usuarios[0].username);
-        usuarios[0].seguidores.push(usuarios[2].username);
+        usuarios[2].siguiendo.push(usuarios[0]._id);
+        usuarios[0].seguidores.push(usuarios[2]._id);
         
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
@@ -163,11 +163,11 @@ async function seedDatabase() {
                     direccion: 'New York, NY'
                 },
                 imagen: 'https://pbs.twimg.com/media/EbbZkhZWAAAa8iC.jpg:large',
-                username: usuarios[2].username,
+                username: usuarios[2]._id,
                 medallas: [medallas[0]._id],
                 comentarios: [
                     {
-                        usuario: usuarios[1].username,
+                        usuario: usuarios[1]._id,
                         texto: '¡Qué máquina!'
                     }
                 ]
@@ -184,11 +184,11 @@ async function seedDatabase() {
                     direccion: 'Tokyo, Japan'
                 },
                 imagen: 'http://www.jmautomocion.com/pics_fotosproductos/1495/big_full_1.jpg',
-                username: usuarios[0].username,
+                username: usuarios[0]._id,
                 medallas: [medallas[1]._id],
                 comentarios: [
                     {
-                        usuario: usuarios[0].username,
+                        usuario: usuarios[0]._id,
                         texto: 'Legendario!'
                     }
                 ]
@@ -205,10 +205,10 @@ async function seedDatabase() {
                     direccion: 'Los Angeles, CA'
                 },
                 imagen: 'https://i.ytimg.com/vi/nn9t_NaH2vo/maxresdefault.jpg',
-                username: usuarios[3].username,
+                username: usuarios[3]._id,
                 comentarios: [
                     {
-                        usuario: usuarios[0].username,
+                        usuario: usuarios[0]._id,
                         texto: 'Motor rotativo increíble'
                     }
                 ]
@@ -226,10 +226,10 @@ async function seedDatabase() {
                     direccion: 'Madrid, Spain'
                 },
                 imagen: 'https://philipireland.com/_userfiles/thumbs/_userfiles-pages-images-cars-992_gt3rs/porsche_992_gt3rs_12_2000x1335-jpg/62e48ebf8900efabf56fab20f3a367d0/porsche_992_gt3rs_12_2000x1335.jpg',
-                username: usuarios[1].username,
+                username: usuarios[1]._id,
                 comentarios: [
                     {
-                        usuario: usuarios[2].username,
+                        usuario: usuarios[2]._id,
                         texto: '¡Increíble diseño!'
                     }
                 ]
@@ -247,7 +247,7 @@ async function seedDatabase() {
                     direccion: 'Madrid, Spain'
                 },
                 imagen: 'https://img.remediosdigitales.com/47c725/mclaren-f1-senna-9/1366_2000.jpg',
-                username: usuarios[1].username,
+                username: usuarios[1]._id,
                 comentarios: [
                 ]
             },
@@ -263,11 +263,11 @@ async function seedDatabase() {
                     direccion: 'New York, NY'
                 },
                 imagen: 'https://cdn.businessinsider.es/sites/navi.axelspringer.es/public/media/image/2019/09/say-hello-lamborghini-aventador-svj-rosso-mimir-matte-red-paint-job.jpg?tf=3840x.jpg:large',
-                username: usuarios[0].username,
+                username: usuarios[0]._id,
                 medallas: [medallas[0]._id],
                 comentarios: [
                     {
-                        usuario: usuarios[1].username,
+                        usuario: usuarios[1]._id,
                         texto: '¡Qué máquina!'
                     }
                 ]

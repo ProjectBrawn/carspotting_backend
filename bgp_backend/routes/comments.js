@@ -7,7 +7,7 @@ const Car = require('../models/Car'); // Asegúrate de importar el modelo de Car
 router.post('/:carId/comentario', autenticarToken, async (req, res) => {
     try {
         const carId = req.params.carId;
-        const usuarioId = req.user.userId; // ID del usuario autenticado extraído del token
+        const usuarioId = req.user.userId; 
         const { texto } = req.body;
 
         // Validar que el texto del comentario no esté vacío
@@ -21,14 +21,17 @@ router.post('/:carId/comentario', autenticarToken, async (req, res) => {
         if (!coche) {
             return res.status(404).json({ error: 'Coche no encontrado' });
         }
+        //Comprobar que existe el usuario
+        const usuario = await User.findById(usuarioId);
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
 
         // Crear el nuevo comentario
         const nuevoComentario = {
             usuario: usuarioId,
             texto: texto.trim(),
-            fecha: new Date(),
-            username: req.user.username, // Asumo que el token también incluye el username
-            usuario_imagen: req.user.imagen // Asumo que el token también incluye la imagen de usuario
+            fecha: new Date()
         };
 
         // Agregar el comentario al array de comentarios

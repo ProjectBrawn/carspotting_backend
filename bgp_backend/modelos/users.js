@@ -2,29 +2,29 @@ const mongoose = require('mongoose');
 
 // Modelo de Usuario
 const userSchema = new mongoose.Schema({
-    username: { 
-        type: String, 
-        required: true, 
-        unique: true, 
-        trim: true 
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
     },
-    email: { 
-        type: String, 
-        required: true, 
-        unique: true, 
-        lowercase: true 
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true
     },
-    password: { 
-        type: String, 
-        required: true 
+    password: {
+        type: String,
+        required: true
     },
-    descripcion: { 
-        type: String, 
-        default: '' 
+    descripcion: {
+        type: String,
+        default: ''
     },
-    fotoPerfil: { 
-        type: String, 
-        default: 'https://i.etsystatic.com/35372836/r/il/70df1f/5861902788/il_fullxfull.5861902788_odt2.jpg' 
+    fotoPerfil: {
+        type: String,
+        default: 'https://i.etsystatic.com/35372836/r/il/70df1f/5861902788/il_fullxfull.5861902788_odt2.jpg'
     },
     sexo: {
         type: String,
@@ -38,9 +38,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    puntos_experiencia: { 
-        type: Number, 
-        default: 0 
+    puntos_experiencia: {
+        type: Number,
+        default: 0
     },
     garaje_principal: {
         type: [{
@@ -48,23 +48,25 @@ const userSchema = new mongoose.Schema({
             ref: 'Coche'
         }],
         validate: {
-            validator: function(v) {
+            validator: function (v) {
                 return v.length <= 5; // Valida el tamanyo del array completo
             },
             message: 'El garaje principal puede tener máximo 5 coches'
         }
-    },    
+    },
     spots: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Coche'
         }]
-    },    
+    },
     siguiendo: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }],
     seguidores: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
     }],
     sesion_activa: {
         type: Boolean,

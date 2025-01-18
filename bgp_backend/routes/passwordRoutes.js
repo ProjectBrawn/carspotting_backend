@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 //Funcion para ver si existe un usuario
 async function userExists(username) {
     //Username puede ser username o email
-    const user = await Users.findOne({ $or: [{ username }, { email: username }] });
+    const user = await Users.findById(username);
     if (user) {
         return true;
     } else {
@@ -31,7 +31,7 @@ router.get('/getEmail', async (req, res) => {
     }
 
     try {
-        const user = await Users.findOne({ $or: [{ username }, { email: username }] });
+        const user = await Users.findById(username);;
         return res.json({ email: user.email });
 
     } catch (error) {

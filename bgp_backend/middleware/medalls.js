@@ -40,7 +40,6 @@ async function asignarMedallas(coche) {
 
     // Comprobamos si el coche del día coincide con el coche publicado (marca y modelo)
     // Comprobamos si el nombre del coche del día está contenido en la concatenación de coche.marca + coche.modelo
-    const eyyy = (`${coche.marca.toLowerCase()} ${coche.modelo.toLowerCase()}`.trim().includes(cocheDelDia?.name?.toLowerCase().trim()))
 
     if (`${coche.marca.toLowerCase()} ${coche.modelo.toLowerCase()}`.trim().includes(cocheDelDia?.name?.toLowerCase().trim()))        {
         const medallaCocheDelDia = await Medalla.findOne({ nombre: 'Car of the Day' });

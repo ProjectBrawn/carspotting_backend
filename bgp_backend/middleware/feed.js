@@ -4,14 +4,6 @@ const Medalla = require('../modelos/achievements');
 
 async function obtenerTodosCoches(fechaLimite = null) {
     try {
-        // Primero, encontramos el usuario por su username
-        // const usuario = await User.findOne({ username }).select('siguiendo');
-
-        // if (!usuario) {
-        //     throw new Error('Usuario no encontrado');
-        // }
-
-        // Construimos el query base
         const query = {};
 
         // Si se proporciona una fecha límite, añadimos condición de fecha
@@ -21,9 +13,7 @@ async function obtenerTodosCoches(fechaLimite = null) {
 
         // Buscamos los coches de todos los usuarios
         const posts = await Post.find(query)
-            .sort({ fecha_captura: -1 }) // Ordenar de más reciente a más antiguo
-            // .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
-            // .lean(); // Convierte a objeto plano para mejor rendimiento
+            .sort({ fecha_captura: -1 })
 
         return posts;
     } catch (error) {
@@ -36,16 +26,17 @@ async function obtenerTodosCoches(fechaLimite = null) {
 // Método para obtener el feed de coches de siguiendo por username
 async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
     try {
-        // Primero, encontramos el usuario por su username
-        const usuario = await User.findOne({ $or: [{ username }, { email: username }] }).select('siguiendo');
-        
+        // Primero, encontramos el usuario por su objectId
+        const usuario = await User.findById(username).select('siguiendo');
+        // const usuario = await User.findOne({ $or: [{ username }, { email: username }] }).select('siguiendo');
+
         if (!usuario) {
             throw new Error('Usuario no encontrado');
         }
 
         // Construimos el query base
         const query = {
-            username: { $in: usuario.siguiendo }
+            _id: { $in: usuario.siguiendo }
         };
 
         // Si se proporciona una fecha límite, añadimos condición de fecha
@@ -58,9 +49,9 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
         const posts = await Post.find(query)
             .sort({ fecha_captura: -1 }) // Ordenar de más reciente a más antiguo
             .limit(limite) // Limitar número de resultados
-            // .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
-            // .populate('medallas') // Opcional: poblar medallas si las necesitas
-            // .lean(); // Convierte a objeto plano para mejor rendimiento
+        // .populate('usuario_captura', 'nombre username fotoPerfil') // Poblar detalles del usuario
+        // .populate('medallas') // Opcional: poblar medallas si las necesitas
+        // .lean(); // Convierte a objeto plano para mejor rendimiento
 
         return posts;
     } catch (error) {
@@ -70,59 +61,8 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
 }
 
 
-// Ejemplos de uso:
-// 1. Obtener los últimos 20 coches de siguiendo
-async function ejemploUso1() {
-    const feedCoches = await obtenerFeedCoches('ID_DEL_USUARIO');
-}
-
-// 2. Obtener coches de siguiendo hasta una fecha específica
-async function ejemploUso2() {
-    const fechaLimite = new Date('2024-01-01');
-    const feedCoches = await obtenerFeedCoches('ID_DEL_USUARIO', fechaLimite, 50);
-}
-
-// 3. Método para paginación (por si quieres cargar más coches)
-async function obtenerFeedCochesPaginado(usuarioId, ultimaFecha = null, limite = 20) {
-    try {
-        const usuario = await User.findById(usuarioId).select('siguiendo');
-        
-        const query = {
-            username: { $in: usuario.siguiendo }
-        };
-
-        // Si se proporciona la última fecha, busca coches anteriores a esa fecha
-        if (ultimaFecha) {
-            query.fecha_captura = { $lt: ultimaFecha };
-        }
-
-        const posts = await Post.find(query)
-            .sort({ fecha_captura: -1 })
-            .limit(limite)
-            // .populate('usuario_captura', 'nombre username fotoPerfil')
-            // .lean();
-
-        return posts;
-    } catch (error) {
-        console.error('Error en paginación de feed:', error);
-        throw error;
-    }
-}
-
-// Ejemplo de uso de paginación
-async function ejemploPaginacion() {
-    let feedInicial = await obtenerFeedCochesPaginado('ID_DEL_USUARIO');
-
-    // Si quieres cargar más, usas la fecha del último coche
-    if (feedInicial.length > 0) {
-        const ultimaFecha = feedInicial[feedInicial.length - 1].fecha_captura;
-        let feedSiguiente = await obtenerFeedCochesPaginado('ID_DEL_USUARIO', ultimaFecha);
-    }
-}
-
 module.exports = {
     obtenerTodosCoches,
-    obtenerFeedCoches,
-    obtenerFeedCochesPaginado
+    obtenerFeedCoches
 };
 

@@ -13,7 +13,7 @@ router.get('/', autenticarToken, async (req, res) => {
 
 // Obtén un usuario específico por username 
 router.get('/:username', autenticarToken, async (req, res) => {
-  const user = await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
+  const user = await Users.findById(req.params.username);
   if (!user) {
     return res.status(404).send('Usuario no encontrado');
   } else {
@@ -27,7 +27,7 @@ router.put('/:username', autenticarToken, async (req, res) => {
 
   try {
     // Buscar el usuario por el parámetro de ruta
-    const user =  await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
+    const user =  await Users.findById(req.params.username);;
 
     if (!user) {
       return res.status(404).send('Usuario no encontrado');
@@ -61,19 +61,6 @@ router.put('/:username', autenticarToken, async (req, res) => {
 
     await user.save();
     res.send(user);
-    // ok = ""
-    // if (newUsername) {
-    //   user.username = newUsername;
-    //   //AHora hay que actualizar toda la base de datos
-    //   //let ok = updateAllDatabase(req.params.username, newUsername);
-    // }
-    // // Guardar los cambios
-    // if (ok == "Success") {
-    //   await user.save();
-    //   res.send(user);
-    // }else{
-    //   res.send("Error al actualizar toda la base de datos");
-    // }
 
   } catch (error) {
     console.error(error);
@@ -203,7 +190,7 @@ router.post('/login', async (req, res) => {
     await tokenDocument.save();
     user.sesion_activa = true;
     await user.save();
-    res.status(200).send({ status: 'success', token });
+    res.status(200).send({ status: 'success', token, userId: user._id });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ status: 'failed', token: "" });
@@ -244,7 +231,7 @@ router.post('/loginGoogle', async (req, res) => {
     await tokenDocument.save();
     user.sesion_activa = true;
     await user.save();
-    res.status(200).send({ status: 'success', token, username: user.username });
+    res.status(200).send({ status: 'success', token, username: user.username, userId: user._id });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ status: 'failed', token: "" });
@@ -261,7 +248,7 @@ router.post('/cerrarSesion', async (req, res) => {
 
   try {
     // Busca al usuario por su email o username
-    const user = await Users.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
+    const user = await Users.findById(emailOrUsername);;
     //POner el campo sesion activa a true
     if (!user) {
       return res.status(400).send({ status: 'failed', token: "" });
@@ -290,7 +277,7 @@ router.post('/follow', autenticarToken, async (req, res) => {
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
+    const usuario = await Users.findById(usernameOrigin);
     
     
     if (!usuario) {
@@ -298,7 +285,7 @@ router.post('/follow', autenticarToken, async (req, res) => {
     }
 
     // Obtener al usuario que se quiere agregar como amigo
-    const amigo = await Users.findOne({ $or: [{ username: usernameDestiny }, { email: usernameDestiny }] });
+    const amigo = await Users.findById(usernameDestiny);
     if (!amigo) {
       return res.status(404).send('Amigo no encontrado');
     }
@@ -335,13 +322,13 @@ router.delete('/unfollow', autenticarToken, async (req, res) => {
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
+    const usuario = await Users.findById(usernameOrigin);
     if (!usuario) {
       return res.status(404).send('Usuario origen no encontrado');
     }
 
     // Obtener al usuario que se quiere dejar de seguir
-    const amigo = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
+    const amigo = await Users.findById(usernameDestiny);
     if (!amigo) {
       return res.status(404).send('Usuario destino no encontrado');
     }
@@ -379,13 +366,13 @@ router.post('/comprobarAmistad', autenticarToken, async (req, res) => {
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ $or: [{ username }, { email: username }] });
+    const usuario = await Users.findById(username);
     if (!usuario) {
       return res.status(404).send('Usuario no encontrado');
     }
 
     // Obtener al amigo que se quiere comprobar
-    const amigo = await Users.findOne({ $or: [{ username:amigoUsername }, { email: amigoUsername }] });
+    const amigo = await Users.findById(amigoUsername);
     if (!amigo) {
       return res.status(404).send('Amigo no encontrado');
     }
@@ -407,8 +394,8 @@ router.post('/follow', async (req, res) => {
 
   try {
     // Verificar que ambos usuarios existan
-    const userOrigin = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
-    const userDestiny =  await Users.findOne({ $or: [{ username: usernameDestiny }, { email: usernameDestiny }] });
+    const userOrigin = await Users.findById(usernameOrigin);
+    const userDestiny =  await Users.findById(usernameDestiny);
 
     if (!userOrigin || !userDestiny) {
       return res.status(404).json({
@@ -448,10 +435,7 @@ router.post('/comprobarUsuario', async (req, res) => {
 
   try {
     // Supongamos que tienes un modelo llamado "Usuario"
-    const usuario = await Users.findOne({
-      $or: [{ username: emailOrUsername }, { email: emailOrUsername }]
-    });
-
+    const usuario = await Users.findById(emailOrUsername)
     if (usuario) {
       return res.status(200).json({ existe: true, mensaje: 'El usuario existe.' });
     } else {

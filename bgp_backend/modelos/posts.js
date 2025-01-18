@@ -2,24 +2,24 @@ const mongoose = require('mongoose');
 
 // Modelo de Coche
 const postSchema = new mongoose.Schema({
-    marca: { 
-        type: String, 
-        required: true 
+    marca: {
+        type: String,
+        required: true
     },
-    modelo: { 
-        type: String, 
-        required: true 
+    modelo: {
+        type: String,
+        required: true
     },
-    anyo: { 
-        type: Number, 
-        required: true 
+    anyo: {
+        type: Number,
+        required: true
     },
-    generacion: { 
-        type: String ,
+    generacion: {
+        type: String,
         required: true
     },
     nacionalidad: {
-        type: String,    
+        type: String,
         required: true
     },
     ubicacion: {
@@ -27,13 +27,13 @@ const postSchema = new mongoose.Schema({
         longitud: Number,
         direccion: String
     },
-    descripcion: { 
-        type: String, 
-        default: '' 
+    descripcion: {
+        type: String,
+        default: ''
     },
-    imagen: { 
-        type: String, 
-        required: true 
+    imagen: {
+        type: String,
+        required: true
     },
     username: {
         type: String,
@@ -45,8 +45,8 @@ const postSchema = new mongoose.Schema({
     }],
     comentarios: [{
         usuario: {
-            type: String,
-            required: true
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
         },
         texto: String,
         fecha: {

@@ -16,7 +16,7 @@ router.put('/', autenticarToken, async (req, res) => {
   
     try {
       // Obtener al usuario que tiene el garaje usando el username o el email
-      const usuario = await Users.findOne({ $or: [{ username }, { email: username }] });
+      const usuario = await Users.findById(username);
       if (!usuario) {
         return res.status(404).json({
           code: 404,
@@ -78,7 +78,7 @@ router.delete('/', autenticarToken, async (req, res) => {
   
     try {
       // Obtener al usuario que tiene el garaje usando el username
-      const usuario = await Users.findOne({ $or: [{ username }, { email: username }] });
+      const usuario = await Users.findById(username);
       if (!usuario) {
         return res.status(404).json({
           code: 404,
