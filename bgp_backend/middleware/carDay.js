@@ -10,7 +10,6 @@ async function getCarOfTheDay() {
         const totalCars = await CarDay.countDocuments();
 
         if (totalCars === 0) {
-            console.log('No hay coches disponibles.');
             return;
         }
 

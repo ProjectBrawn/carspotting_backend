@@ -148,7 +148,6 @@ async function seedDatabase() {
         
         await Promise.all(usuarios.map(usuario => usuario.save()));
 
-        console.log('Usuarios creados con éxito');
 
         // Crear coches
         const posts = await Post.create([

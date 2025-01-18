@@ -36,7 +36,6 @@ async function obtenerTodosCoches(fechaLimite = null) {
 // Método para obtener el feed de coches de siguiendo por username
 async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
     try {
-        console.log("Voy a ver si encuentro al usuario: ", username);
         // Primero, encontramos el usuario por su username
         const usuario = await User.findOne({ $or: [{ username }, { email: username }] }).select('siguiendo');
         
@@ -54,7 +53,6 @@ async function obtenerFeedCoches(username, fechaLimite = null, limite = 20) {
             query.fecha_captura = { $lte: fechaLimite };
         }
 
-        console.log('Query:', query);
 
         // Buscamos los coches
         const posts = await Post.find(query)

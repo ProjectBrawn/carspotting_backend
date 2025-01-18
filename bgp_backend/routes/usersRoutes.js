@@ -244,7 +244,7 @@ router.post('/loginGoogle', async (req, res) => {
     await tokenDocument.save();
     user.sesion_activa = true;
     await user.save();
-    res.status(200).send({ status: 'success', token });
+    res.status(200).send({ status: 'success', token, username: user.username });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ status: 'failed', token: "" });

@@ -33,7 +33,6 @@ async function obtenerTodosCoches(fechaLimite = null) {
         // Buscamos los coches dentro del rango
         const coches = await Posts.find(query)
             .sort({ fecha_captura: -1 }); // Ordenar de más reciente a más antiguo
-        console.log('coches:', coches);
         return coches;
     } catch (error) {
         console.error('Error al obtener coches:', error);
