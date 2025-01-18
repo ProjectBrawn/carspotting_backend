@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 
 // Modelo de Usuario
 const userSchema = new mongoose.Schema({
-    nombre: { 
-        type: String, 
-        required: true 
-    },
     username: { 
         type: String, 
         required: true, 

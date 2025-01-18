@@ -31,7 +31,7 @@ router.get('/getEmail', async (req, res) => {
     }
 
     try {
-        const user = await Users.findOne({ username });
+        const user = await Users.findOne({ $or: [{ username }, { email: username }] });
         return res.json({ email: user.email });
 
     } catch (error) {

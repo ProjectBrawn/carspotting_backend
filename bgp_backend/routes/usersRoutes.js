@@ -13,7 +13,7 @@ router.get('/', autenticarToken, async (req, res) => {
 
 // Obtén un usuario específico por username 
 router.get('/:username', autenticarToken, async (req, res) => {
-  const user = await Users.findOne({ username: req.params.username });
+  const user = await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
   if (!user) {
     return res.status(404).send('Usuario no encontrado');
   } else {
@@ -27,7 +27,7 @@ router.put('/:username', autenticarToken, async (req, res) => {
 
   try {
     // Buscar el usuario por el parámetro de ruta
-    const user = await Users.findOne({ username: req.params.username });
+    const user =  await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
 
     if (!user) {
       return res.status(404).send('Usuario no encontrado');
@@ -48,7 +48,7 @@ router.put('/:username', autenticarToken, async (req, res) => {
 
     // Verificar si el nuevo username ya está en uso
     if (newUsername && newUsername !== user.username) {
-      const existingUser = await Users.findOne({ username: newUsername });
+      const existingUser =  await Users.findOne({ $or: [{ username: newUsername }, { email: newUsername }] });
       if (existingUser) {
         return res.status(400).send('El nombre de usuario ya está en uso.');
       }
@@ -82,10 +82,10 @@ router.put('/:username', autenticarToken, async (req, res) => {
 });
 
 router.post('/createUser', async (req, res) => {
-  const { nombre, apellidos, username, email, sexo, anyo_nacimiento, pais, password, origin} = req.body;
+  const {username, email, sexo, anyo_nacimiento, pais, password, origin} = req.body;
 
   // Validaciones básicas
-  if (!nombre || !apellidos || !email || !password || !username || !sexo || !anyo_nacimiento || !pais || !origin) {
+  if (!email || !password || !username || !sexo || !anyo_nacimiento || !pais || !origin) {
     return res.status(400).send({ status: 'failed', message: "Todos campos deben ser completados" });
   }
 
@@ -98,12 +98,9 @@ router.post('/createUser', async (req, res) => {
 
     // Encriptar la contraseña antes de guardar
     const hashedPassword = await bcrypt.hash(password, 10);
-    //Meter el en nombre los apellidos tambien
-    var nombreNuevo = nombre + " " + apellidos;
 
     // Crear el usuario
     const user = new Users({
-      nombre: nombreNuevo,
       username,
       email,
       sexo,
@@ -112,6 +109,47 @@ router.post('/createUser', async (req, res) => {
       origin,
       password: hashedPassword,
       siguiendo: [username]
+    });
+
+    await user.save();
+
+
+    res.status(200).send({ status: 'success', message: "Usuario creado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 'failed', message: "Error al crear usuario" });
+  }
+});
+
+router.post('/createUserGoogle', async (req, res) => {
+  const {username, email, sexo, anyo_nacimiento, pais, password, origin, fotoPerfil} = req.body;
+
+  // Validaciones básicas
+  if (!email || !password || !username || !sexo || !anyo_nacimiento || !pais || !origin) {
+    return res.status(400).send({ status: 'failed', message: "Todos campos deben ser completados" });
+  }
+
+  try {
+    // Verificar si el email o el username ya existen en la base de datos
+    const existingUser = await Users.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.status(400).send({ status: 'failed', message: "El email o el username ya están en uso" });
+    }
+
+    // Encriptar la contraseña antes de guardar
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Crear el usuario
+    const user = new Users({
+      username,
+      email,
+      sexo,
+      anyo_nacimiento,
+      pais,
+      origin,
+      password: hashedPassword,
+      siguiendo: [username],
+      fotoPerfil
     });
 
     await user.save();
@@ -142,9 +180,55 @@ router.post('/login', async (req, res) => {
       return res.status(400).send({ status: 'failed', token: "" });
     }
 
+    //SI el usuario no es nativo, no puede iniciar sesion
+    if (user.origin != "app") {
+      return res.status(400).send({ status: 'failed', token: "" });
+    }
+
     // Compara la contraseña proporcionada con la almacenada en la base de datos
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      return res.status(400).send({ status: 'failed', token: "" });
+    }
+
+    // Genera un token JWT si las credenciales son correctas
+    const token = jwt.sign({ userId: user._id, username: user.username }, "pruebas");
+
+    // Guarda el token en el esquema de Token
+    const tokenDocument = new Token({
+      token,
+      userId: user._id,
+    });
+
+    await tokenDocument.save();
+    user.sesion_activa = true;
+    await user.save();
+    res.status(200).send({ status: 'success', token });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ status: 'failed', token: "" });
+  }
+});
+
+router.post('/loginGoogle', async (req, res) => {
+  console.log("Voy a iniciar sesion con google");
+  const { emailOrUsername } = req.body;
+
+  // Verifica si ambos campos están presentes
+  if (!emailOrUsername) {
+    return res.status(400).send('Por favor, proporciona email o username y contraseña');
+  }
+
+  try {
+    // Busca al usuario por su email o username
+    const user = await Users.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
+    //POner el campo sesion activa a true
+    if (!user) {
+      return res.status(400).send({ status: 'failed', token: "" });
+    }
+
+    //SI el usuario no es nativo, no puede iniciar sesion
+    if (user.origin == "app") {
       return res.status(400).send({ status: 'failed', token: "" });
     }
 
@@ -206,13 +290,15 @@ router.post('/follow', autenticarToken, async (req, res) => {
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ username: usernameOrigin });
+    const usuario = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
+    
+    
     if (!usuario) {
       return res.status(404).send('Usuario no encontrado');
     }
 
     // Obtener al usuario que se quiere agregar como amigo
-    const amigo = await Users.findOne({ username: usernameDestiny });
+    const amigo = await Users.findOne({ $or: [{ username: usernameDestiny }, { email: usernameDestiny }] });
     if (!amigo) {
       return res.status(404).send('Amigo no encontrado');
     }
@@ -249,13 +335,13 @@ router.delete('/unfollow', autenticarToken, async (req, res) => {
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ username: usernameOrigin });
+    const usuario = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
     if (!usuario) {
       return res.status(404).send('Usuario origen no encontrado');
     }
 
     // Obtener al usuario que se quiere dejar de seguir
-    const amigo = await Users.findOne({ username: usernameDestiny });
+    const amigo = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
     if (!amigo) {
       return res.status(404).send('Usuario destino no encontrado');
     }
@@ -293,13 +379,13 @@ router.post('/comprobarAmistad', autenticarToken, async (req, res) => {
 
   try {
     // Obtener al usuario que hace la solicitud
-    const usuario = await Users.findOne({ username });
+    const usuario = await Users.findOne({ $or: [{ username }, { email: username }] });
     if (!usuario) {
       return res.status(404).send('Usuario no encontrado');
     }
 
     // Obtener al amigo que se quiere comprobar
-    const amigo = await Users.findOne({ username: amigoUsername });
+    const amigo = await Users.findOne({ $or: [{ username:amigoUsername }, { email: amigoUsername }] });
     if (!amigo) {
       return res.status(404).send('Amigo no encontrado');
     }
@@ -321,8 +407,8 @@ router.post('/follow', async (req, res) => {
 
   try {
     // Verificar que ambos usuarios existan
-    const userOrigin = await Users.findOne({ username: usernameOrigin });
-    const userDestiny = await Users.findOne({ username: usernameDestiny });
+    const userOrigin = await Users.findOne({ $or: [{ username: usernameOrigin }, { email: usernameOrigin }] });
+    const userDestiny =  await Users.findOne({ $or: [{ username: usernameDestiny }, { email: usernameDestiny }] });
 
     if (!userOrigin || !userDestiny) {
       return res.status(404).json({
@@ -356,5 +442,25 @@ router.post('/follow', async (req, res) => {
   }
 });
 
+// Endpoint para ver si un usuario existe
+router.post('/comprobarUsuario', async (req, res) => {
+  const { emailOrUsername } = req.body;
+
+  try {
+    // Supongamos que tienes un modelo llamado "Usuario"
+    const usuario = await Users.findOne({
+      $or: [{ username: emailOrUsername }, { email: emailOrUsername }]
+    });
+
+    if (usuario) {
+      return res.status(200).json({ existe: true, mensaje: 'El usuario existe.' });
+    } else {
+      return res.status(404).json({ existe: false, mensaje: 'El usuario no existe.' });
+    }
+  } catch (error) {
+    console.error('Error al comprobar usuario:', error);
+    return res.status(500).json({ mensaje: 'Error en el servidor.', error: error.message });
+  }
+});
 
 module.exports = router;

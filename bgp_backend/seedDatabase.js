@@ -82,8 +82,6 @@ async function seedDatabase() {
         // Crear usuarios
         const usuarios = await User.create([
             {
-                nombre: 'Juan Pérez',
-                apellidos: 'apellido',
                 username: 'juanspotter',
                 email: 'juan@example.com',
                 sexo: 'Hombre',
@@ -96,8 +94,6 @@ async function seedDatabase() {
                 spots: [] // Añadido el campo 'spots'
             },
             {
-                nombre: 'María López',
-                apellidos: 'apellido',
                 username: 'mariaspotter',
                 email: 'maria@example.com',
                 sexo: 'Mujer',
@@ -111,8 +107,6 @@ async function seedDatabase() {
                 spots: [] // Añadido el campo 'spots'
             },
             {
-                nombre: 'Carlos Ruiz',
-                apellidos: 'apellido',
                 username: 'carlosspotter',
                 email: 'carlos@example.com',
                 sexo: 'Hombre',
@@ -126,8 +120,6 @@ async function seedDatabase() {
                 spots: [] // Añadido el campo 'spots'
             },
             {
-                nombre: 'Ayrton Senna',
-                apellidos: 'apellido',
                 username: 'ayrton1',
                 email: 'ayrton@example.com',
                 sexo: 'Hombre',

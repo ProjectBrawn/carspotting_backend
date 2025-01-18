@@ -188,7 +188,7 @@ router.post('/postCars', autenticarToken, async (req, res) => {
         await nuevoPost.save();
         //Ahora quiero saber cual era el objectid del post que acabo de guardar
         //Actualizar el campo posts del usuario
-        const user = await Users.findOne({ username: username });
+        const user = await Users.findOne({ $or: [{ username }, { email: username }] });
         user.spots.push(nuevoPost._id);
         await user.save();
 
