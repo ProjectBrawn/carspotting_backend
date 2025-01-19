@@ -4,6 +4,7 @@ const router = express.Router();
 const Users = require('../modelos/users');
 const Token = require('../modelos/token');
 const Posts = require('../modelos/posts');
+const Report = require('../modelos/report');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
@@ -56,33 +57,55 @@ router.put('/:username', autenticarToken, async (req, res) => {
       }
     }
 
+    const oldUsername = user.username;
+
     // Actualizar los campos
     if (descripcion) user.descripcion = descripcion;
     if (newUsername) user.username = newUsername;
     if (imageUrl) user.fotoPerfil = imageUrl;
 
     await user.save();
-    res.send(user);
-    // return res.status(200).send('Usuario actualizado correctamente');
-    // ok = ""
-    // if (newUsername) {
-    //   user.username = newUsername;
-    //   //AHora hay que actualizar toda la base de datos
-    //   //let ok = updateAllDatabase(req.params.username, newUsername);
-    // }
-    // // Guardar los cambios
-    // if (ok == "Success") {
-    //   await user.save();
-    //   res.send(user);
-    // }else{
-    //   res.send("Error al actualizar toda la base de datos");
-    // }
 
+    // Actualizar seguidores y seguidos
+    if (newUsername) {
+      await Users.updateMany(
+        { siguiendo: oldUsername },
+        { $set: { "siguiendo.$[elem]": newUsername } },
+        { arrayFilters: [{ "elem": oldUsername }] }
+      );
+      await Users.updateMany(
+        { seguidores: oldUsername },
+        { $set: { "seguidores.$[elem]": newUsername } },
+        { arrayFilters: [{ "elem": oldUsername }] }
+      );
+
+      // Actualizar username en los posts creados por el usuario
+      await Posts.updateMany(
+        { username: oldUsername },
+        { $set: { username: newUsername } }
+      );
+
+      // Actualizar username en los comentarios realizados por el usuario
+      await Posts.updateMany(
+        { "comentarios.usuario": oldUsername },
+        { $set: { "comentarios.$[elem].usuario": newUsername } },
+        { arrayFilters: [{ "elem.usuario": oldUsername }] }
+      );
+
+      // Actualizar username en la tabla de reportes
+      await Report.updateMany(
+        { username: oldUsername },
+        { $set: { username: newUsername } }
+      );
+    }
+
+    res.send(user);
   } catch (error) {
     console.error(error);
     res.status(500).send('Error interno del servidor');
   }
 });
+
 
 router.post('/createUser', async (req, res) => {
   const {username, email, sexo, anyo_nacimiento, pais, password, origin} = req.body;
