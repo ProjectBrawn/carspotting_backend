@@ -472,6 +472,7 @@ router.delete('/deleteUser', autenticarToken, async (req, res) => {
     // Obtener el userId del token
     const userId = req.user.userId;
     console.log("El userId es: " + userId);
+
     // Validar que el ID es un ObjectId válido
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: 'ID de usuario no válido' });
@@ -497,6 +498,12 @@ router.delete('/deleteUser', autenticarToken, async (req, res) => {
 
     // Eliminar los posts creados por el usuario
     await Posts.deleteMany({ username });
+
+    // Eliminar los comentarios realizados por el usuario en los posts de otros usuarios
+    await Posts.updateMany(
+      { "comentarios.usuario": username },
+      { $pull: { comentarios: { usuario: username } } }
+    );
 
     // Eliminar tokens asociados al usuario
     await Token.deleteMany({ userId });
