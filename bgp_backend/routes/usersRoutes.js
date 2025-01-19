@@ -1,7 +1,9 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Users = require('../modelos/users');
 const Token = require('../modelos/token');
+const Posts = require('../modelos/posts');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
@@ -61,6 +63,7 @@ router.put('/:username', autenticarToken, async (req, res) => {
 
     await user.save();
     res.send(user);
+    // return res.status(200).send('Usuario actualizado correctamente');
     // ok = ""
     // if (newUsername) {
     //   user.username = newUsername;
@@ -463,4 +466,54 @@ router.post('/comprobarUsuario', async (req, res) => {
   }
 });
 
+router.delete('/deleteUser', autenticarToken, async (req, res) => {
+  console.log("Voy a eliminar el usuario");
+  try {
+    // Obtener el userId del token
+    const userId = req.user.userId;
+    console.log("El userId es: " + userId);
+    // Validar que el ID es un ObjectId válido
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'ID de usuario no válido' });
+    }
+
+    // Buscar al usuario por ID
+    const usuario = await Users.findById(userId);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const username = usuario.username;
+
+    // Actualizar seguidores y seguidos de otros usuarios
+    await Users.updateMany(
+      { siguiendo: username },
+      { $pull: { siguiendo: username } }
+    );
+    await Users.updateMany(
+      { seguidores: username },
+      { $pull: { seguidores: username } }
+    );
+
+    // Eliminar los posts creados por el usuario
+    await Posts.deleteMany({ username });
+
+    // Eliminar tokens asociados al usuario
+    await Token.deleteMany({ userId });
+
+    // Eliminar al usuario
+    await Users.findByIdAndDelete(userId);
+
+    return res.status(200).json({ message: 'Usuario y referencias eliminados correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar el usuario:', error);
+    return res.status(500).json({
+      error: 'Error interno del servidor',
+      detalles: error.message
+    });
+  }
+});
+
+
 module.exports = router;
+
