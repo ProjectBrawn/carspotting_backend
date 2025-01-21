@@ -11,6 +11,7 @@ const medalsRoutes = require('./routes/medalsRoutes');
 const garajeRoutes = require('./routes/garajeRoutes');
 const openaiRoutes = require('./routes/openaiRoutes');
 const passwordRoutes = require('./routes/passwordRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 
 
@@ -33,6 +34,7 @@ app.use('/medallas', medalsRoutes);
 app.use('/garaje', garajeRoutes);
 app.use('/detectCar', openaiRoutes);
 app.use('/password', passwordRoutes);
+app.use('/email', emailRoutes);
 app.use('/report', reportRoutes);
 
 

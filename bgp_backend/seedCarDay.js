@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
+require('dotenv').config(); 
 const { CarDay, CarDayIndex } = require('./modelos/daily_car');  // Importa los modelos de coches e índice
 
 
 async function populateCars() {
     try {
         // Conexión a la base de datos (ajusta la URL según tu configuración)
-        await mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        //Deployment
+        //await mongoose.connect(process.env.CONNECTION_STRING);
+
+        //Local
+        //await mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp');
 
         // Datos de ejemplo para poblar la colección `cars`
         const carsData = [

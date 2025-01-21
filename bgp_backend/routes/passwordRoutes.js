@@ -63,10 +63,94 @@ router.post('/sendEmail', async (req, res) => {
     const mailOptions = {
         from: 'projectbrawn@gmail.com',
         to: "sergiohrn99@gmail.com",
-        subject: '"Ey, olvidaste tu contraseña?"',
-        text: `Tu código de verificación es: ${code}`,
+        subject: '¡Ey, olvidaste tu contraseña?',
+        html: `
+            <html>
+                <head>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            margin: 0;
+                            padding: 0;
+                            text-align: center;
+                        }
+                        .container {
+                            width: 100%;
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background-color: #ffffff;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }
+                        .header {
+                            background-color: #FF7043;
+                            padding: 40px 20px;
+                            color: white;
+                            text-align: center;
+                        }
+                        .header h1 {
+                            margin: 0;
+                            font-size: 36px;
+                        }
+                        .content {
+                            padding: 20px;
+                            color: #333;
+                        }
+                        .content p {
+                            font-size: 16px;
+                            line-height: 1.6;
+                        }
+                        .highlight {
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #FF7043;
+                        }
+                        .code-box {
+                            margin: 20px 0;
+                            padding: 15px;
+                            background-color: #f1f1f1;
+                            border: 1px solid #FF7043;
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #FF7043;
+                            display: inline-block;
+                            border-radius: 5px;
+                        }
+                        .footer {
+                            background-color: #f9f9f9;
+                            padding: 20px;
+                            font-size: 14px;
+                            color: #888;
+                        }
+                        .footer p {
+                            margin: 10px 0 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>¿Olvidaste tu contraseña?</h1>
+                        </div>
+                        <div class="content">
+                            <p>¡Hola!</p>
+                            <p>Recibimos una solicitud para restablecer tu contraseña en <strong>GTSpotters</strong>. Si no fuiste tú quien solicitó el cambio, por favor ignora este mensaje.</p>
+                            <p>Si eres tú, aquí tienes tu código de verificación:</p>
+                            <div class="code-box">${code}</div>
+                            <p>Usa este código para restablecer tu contraseña. Si tienes problemas, no dudes en contactarnos.</p>
+                        </div>
+                        <div class="footer">
+                            <p>Gracias por ser parte de GTSpotters. Si necesitas ayuda, estamos aquí para ti.</p>
+                            <p>&copy; ${new Date().getFullYear()} GTSpotters. Todos los derechos reservados.</p>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `,
     };
-
+    
     try {
         // Enviar el correo
         await transporter.sendMail(mailOptions);

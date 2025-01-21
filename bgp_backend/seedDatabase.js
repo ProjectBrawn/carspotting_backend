@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('./modelos/users.js');
 const Post = require('./modelos/posts.js');
 const Medalla = require('./modelos/achievements.js');
+require('dotenv').config();
 
 // Función para generar contraseña hasheada
 const hashPassword = async (password) => {
@@ -13,10 +14,12 @@ const hashPassword = async (password) => {
 async function seedDatabase() {
     try {
         // Conexión a la base de datos (ajusta la URL según tu configuración)
-        await mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+
+        //Deployment
+        //await mongoose.connect(process.env.CONNECTION_STRING);
+
+        //Local
+        await mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp');
 
         // Limpiar base de datos
         await User.deleteMany({});
@@ -89,6 +92,7 @@ async function seedDatabase() {
                 pais: 'España',
                 password: await hashPassword('password123'),
                 descripcion: 'Amante de los coches clásicos',
+                fotoPerfil: 'https://i.etsystatic.com/35372836/r/il/70df1f/5861902788/il_fullxfull.5861902788_odt2.jpg',
                 puntos_experiencia: 0,
                 garaje_principal: [],
                 spots: [] // Añadido el campo 'spots'
