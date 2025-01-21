@@ -14,7 +14,6 @@ router.get('/', autenticarToken, async (req, res) => {
   res.send(users);
 });
 
-// Obtén un usuario específico por username 
 router.get('/:username', autenticarToken, async (req, res) => {
   const user = await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
   if (!user) {
