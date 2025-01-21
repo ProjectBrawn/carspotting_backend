@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp')
+mongoose.connect(process.env.CONNECTION_STRING)
   .then(() => console.log('Conectado a MongoDB'))
   .catch((error) => console.error('Error al conectar a MongoDB', error));
