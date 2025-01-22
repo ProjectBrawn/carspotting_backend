@@ -63,9 +63,9 @@ router.put('/:username', autenticarToken, async (req, res) => {
     const oldUsername = user.username;
 
     // Actualizar los campos
-    if (descripcion != "") user.descripcion = descripcion;
     if (newUsername != "") user.username = newUsername;
     if (imageUrl) user.fotoPerfil = imageUrl;
+    user.descripcion = descripcion;
 
     await user.save();
 

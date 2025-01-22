@@ -10,7 +10,7 @@ async function populateCars() {
         //await mongoose.connect(process.env.CONNECTION_STRING);
 
         //Local
-        //await mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp');
+        await mongoose.connect('mongodb://127.0.0.1:27017/brawngpapp');
 
         // Datos de ejemplo para poblar la colección `cars`
         const carsData = [

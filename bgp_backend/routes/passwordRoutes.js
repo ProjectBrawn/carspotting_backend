@@ -150,7 +150,7 @@ router.post('/sendEmail', async (req, res) => {
             </html>
         `,
     };
-    
+
     try {
         // Enviar el correo
         await transporter.sendMail(mailOptions);
@@ -165,6 +165,104 @@ router.post('/sendEmail', async (req, res) => {
     }
 
 
+});
+
+router.post('/sendConfirmationEmail', async (req, res) => {
+    const { email } = req.body;
+    console.log(email);
+
+    // Configurar el transporte de correo
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'projectbrawn@gmail.com',
+            pass: 'lpgt uuqs blpo fwgd',
+        },
+    });
+
+    // Opciones del correo
+    const mailOptions = {
+        from: 'projectbrawn@gmail.com',
+        to: "sergiohrn99@gmail.com",
+        subject: '¡Tu contraseña ha sido actualizada con éxito!',
+        html: `
+            <html>
+                <head>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            margin: 0;
+                            padding: 0;
+                            text-align: center;
+                        }
+                        .container {
+                            width: 100%;
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background-color: #ffffff;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }
+                        .header {
+                            background-color: #4CAF50;
+                            padding: 40px 20px;
+                            color: white;
+                            text-align: center;
+                        }
+                        .header h1 {
+                            margin: 0;
+                            font-size: 36px;
+                        }
+                        .content {
+                            padding: 20px;
+                            color: #333;
+                        }
+                        .content p {
+                            font-size: 16px;
+                            line-height: 1.6;
+                        }
+                        .footer {
+                            background-color: #f9f9f9;
+                            padding: 20px;
+                            font-size: 14px;
+                            color: #888;
+                        }
+                        .footer p {
+                            margin: 10px 0 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>¡Contraseña actualizada!</h1>
+                        </div>
+                        <div class="content">
+                            <p>¡Hola!</p>
+                            <p>Queremos confirmarte que tu contraseña en <strong>GTSpotters</strong> ha sido actualizada correctamente.</p>
+                            <p>Si no fuiste tú quien realizó este cambio, por favor contáctanos de inmediato para proteger tu cuenta.</p>
+                            <p>Gracias por mantener tu cuenta segura.</p>
+                        </div>
+                        <div class="footer">
+                            <p>Gracias por ser parte de GTSpotters. Si necesitas ayuda, estamos aquí para ti.</p>
+                            <p>&copy; ${new Date().getFullYear()} GTSpotters. Todos los derechos reservados.</p>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `,
+    };
+
+    try {
+        // Enviar el correo
+        await transporter.sendMail(mailOptions);
+        res.status(200).send({ message: 'Correo de confirmación enviado correctamente' });
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).send({ message: 'Error al enviar el correo de confirmación' });
+    }
 });
 
 router.post('/verificarCodigo', async (req, res) => {
