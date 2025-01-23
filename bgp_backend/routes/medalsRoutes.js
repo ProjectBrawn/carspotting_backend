@@ -30,7 +30,7 @@ router.get('/:id', autenticarToken, async (req, res) => {
 
 // Obtiene todas las medallas (con opciones de filtrado)
 router.get('/', autenticarToken, async (req, res) => {
-    console.log("dentrode medalll1")
+    console.log("Obtengo todas las medallas")
     const { nombre, puntos_min, fecha_desde } = req.query;
     
     try {

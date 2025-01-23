@@ -147,11 +147,6 @@ async function asignarMedallas(coche) {
         const germanEngineer = await Medalla.findOne({ nombre: 'German Engineer' });
         if (germanEngineer) medallas.push(germanEngineer._id);
     }
-
-    console.log('medallas');
-    console.log(medallas);
-
-
     return medallas;
 
 }
