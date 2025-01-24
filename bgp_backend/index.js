@@ -13,6 +13,7 @@ const openaiRoutes = require('./routes/openaiRoutes');
 const passwordRoutes = require('./routes/passwordRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const carLogosRoutes = require('./routes/carLogosRoutes');
 
 
 const app = express();
@@ -36,6 +37,7 @@ app.use('/detectCar', openaiRoutes);
 app.use('/password', passwordRoutes);
 app.use('/email', emailRoutes);
 app.use('/report', reportRoutes);
+app.use('/logos', carLogosRoutes);
 
 
 
