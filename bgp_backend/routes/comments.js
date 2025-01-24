@@ -2,18 +2,22 @@ const express = require('express');
 const router = express.Router();
 const { autenticarToken } = require('../middleware/auth');
 const Car = require('../models/Car'); // Asegúrate de importar el modelo de Car
+const xss = require('xss'); // Para sanitizar entradas de texto
 
 // Ruta para postear un comentario en un coche específico
 router.post('/:carId/comentario', autenticarToken, async (req, res) => {
     try {
         const carId = req.params.carId;
         const usuarioId = req.user.userId; // ID del usuario autenticado extraído del token
-        const { texto } = req.body;
+        let { texto } = req.body;
 
         // Validar que el texto del comentario no esté vacío
         if (!texto || texto.trim() === '') {
             return res.status(400).json({ error: 'El comentario no puede estar vacío' });
         }
+
+        // Sanitizar el texto para prevenir XSS
+        texto = xss(texto.trim());
 
         // Buscar el coche por su ID
         const coche = await Car.findById(carId);
@@ -25,7 +29,7 @@ router.post('/:carId/comentario', autenticarToken, async (req, res) => {
         // Crear el nuevo comentario
         const nuevoComentario = {
             usuario: usuarioId,
-            texto: texto.trim(),
+            texto: texto,
             fecha: new Date(),
             username: req.user.username, // Asumo que el token también incluye el username
             usuario_imagen: req.user.imagen // Asumo que el token también incluye la imagen de usuario

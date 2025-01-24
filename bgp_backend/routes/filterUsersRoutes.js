@@ -11,10 +11,25 @@ router.get('/', autenticarToken, async (req, res) => {
         // Recoger el username de la consulta (query)
         const { username } = req.query;
 
-        // Si no se pasa un username, devolver un error
+        // Validar la entrada del username
         if (!username) {
             return res.status(400).json({ 
                 error: 'El parámetro "username" es requerido' 
+            });
+        }
+
+        // Verificar que la longitud del username no sea excesiva
+        if (username.length > 50) {  // Evita cadenas extremadamente largas
+            return res.status(400).json({
+                error: 'El parámetro "username" no debe superar los 50 caracteres'
+            });
+        }
+
+        // Validar que no contenga caracteres no permitidos (sólo letras, números, guiones y guiones bajos)
+        const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+        if (!usernameRegex.test(username)) {
+            return res.status(400).json({
+                error: 'El parámetro "username" contiene caracteres no válidos. Sólo se permiten letras, números, guiones y guiones bajos.'
             });
         }
 

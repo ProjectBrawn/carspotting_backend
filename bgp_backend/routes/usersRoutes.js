@@ -8,6 +8,8 @@ const Report = require('../modelos/report');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
+const validator = require('validator');
+const xss = require('xss');
 
 router.get('/', autenticarToken, async (req, res) => {
   const users = await Users.find();
@@ -24,37 +26,55 @@ router.get('/:username', autenticarToken, async (req, res) => {
   }
 });
 
-//Actualizar info de un usuario
+
+// Actualizar info de un usuario
 router.put('/:username', autenticarToken, async (req, res) => {
   const { username: newUsername, descripcion, imageUrl } = req.body;
 
-  console.log("voy a actgualizar a un usuario");
+  console.log("Voy a actualizar a un usuario");
   console.log(req.params.username);
 
   try {
     // Buscar el usuario por el parámetro de ruta
-    const user =  await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
+    const user = await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
 
     if (!user) {
       return res.status(404).send('Usuario no encontrado');
     }
 
-    // Validar bio y username
+    // Validar y sanitizar bio (descripcion)
     if (descripcion && typeof descripcion !== 'string') {
       return res.status(400).send('La bio debe ser un texto válido.');
     }
+    // Sanitizar la descripcion para evitar XSS
+    const sanitizedDescripcion = descripcion ? xss(descripcion) : null;
 
+    // Validar la longitud de la descripcion (máximo 500 caracteres, por ejemplo)
+    if (sanitizedDescripcion && sanitizedDescripcion.length > 500) {
+      return res.status(400).send('La bio no debe exceder los 500 caracteres.');
+    }
+
+    // Validar y sanitizar username
     if (newUsername && typeof newUsername !== 'string') {
       return res.status(400).send('El nombre de usuario debe ser un texto válido.');
     }
+    // Sanitizar el nuevo username (solo letras, números y guiones bajos)
+    const sanitizedUsername = newUsername ? newUsername.replace(/[^\w-]/g, '') : null;
 
+    // Validar URL de imagen
     if (imageUrl && typeof imageUrl !== 'string') {
       return res.status(400).send('La URL de la imagen debe ser un texto válido.');
     }
+    // Validar si la URL de la imagen es una URL válida
+    const isValidImageUrl = imageUrl ? validator.isURL(imageUrl) : true;
+
+    if (!isValidImageUrl) {
+      return res.status(400).send('La URL de la imagen no es válida.');
+    }
 
     // Verificar si el nuevo username ya está en uso
-    if (newUsername && newUsername !== user.username) {
-      const existingUser =  await Users.findOne({ $or: [{ username: newUsername }, { email: newUsername }] });
+    if (sanitizedUsername && sanitizedUsername !== user.username) {
+      const existingUser = await Users.findOne({ $or: [{ username: sanitizedUsername }, { email: sanitizedUsername }] });
       if (existingUser) {
         return res.status(400).send('El nombre de usuario ya está en uso.');
       }
@@ -63,42 +83,42 @@ router.put('/:username', autenticarToken, async (req, res) => {
     const oldUsername = user.username;
 
     // Actualizar los campos
-    if (newUsername != "") user.username = newUsername;
+    if (sanitizedUsername) user.username = sanitizedUsername;
     if (imageUrl) user.fotoPerfil = imageUrl;
-    user.descripcion = descripcion;
+    user.descripcion = sanitizedDescripcion;
 
     await user.save();
 
     // Actualizar seguidores y seguidos
-    if (newUsername) {
+    if (sanitizedUsername) {
       await Users.updateMany(
         { siguiendo: oldUsername },
-        { $set: { "siguiendo.$[elem]": newUsername } },
+        { $set: { "siguiendo.$[elem]": sanitizedUsername } },
         { arrayFilters: [{ "elem": oldUsername }] }
       );
       await Users.updateMany(
         { seguidores: oldUsername },
-        { $set: { "seguidores.$[elem]": newUsername } },
+        { $set: { "seguidores.$[elem]": sanitizedUsername } },
         { arrayFilters: [{ "elem": oldUsername }] }
       );
 
       // Actualizar username en los posts creados por el usuario
       await Posts.updateMany(
         { username: oldUsername },
-        { $set: { username: newUsername } }
+        { $set: { username: sanitizedUsername } }
       );
 
       // Actualizar username en los comentarios realizados por el usuario
       await Posts.updateMany(
         { "comentarios.usuario": oldUsername },
-        { $set: { "comentarios.$[elem].usuario": newUsername } },
+        { $set: { "comentarios.$[elem].usuario": sanitizedUsername } },
         { arrayFilters: [{ "elem.usuario": oldUsername }] }
       );
 
       // Actualizar username en la tabla de reportes
       await Report.updateMany(
         { username: oldUsername },
-        { $set: { username: newUsername } }
+        { $set: { username: sanitizedUsername } }
       );
     }
 
@@ -109,13 +129,28 @@ router.put('/:username', autenticarToken, async (req, res) => {
   }
 });
 
-
+// Crear un nuevo usuario
 router.post('/createUser', async (req, res) => {
-  const {username, email, sexo, anyo_nacimiento, pais, password, origin} = req.body;
+  const { username, email, sexo, anyo_nacimiento, pais, password, origin } = req.body;
 
   // Validaciones básicas
   if (!email || !password || !username || !sexo || !anyo_nacimiento || !pais || !origin) {
     return res.status(400).send({ status: 'failed', message: "Todos campos deben ser completados" });
+  }
+
+  // Validar formato del email
+  if (!validator.isEmail(email)) {
+    return res.status(400).send({ status: 'failed', message: "El email no es válido" });
+  }
+
+  // Validar longitud del username (máximo 30 caracteres)
+  if (username.length > 30) {
+    return res.status(400).send({ status: 'failed', message: "El nombre de usuario no puede exceder los 30 caracteres" });
+  }
+
+  // Validar longitud de la contraseña (mínimo 8 caracteres)
+  if (password.length < 8) {
+    return res.status(400).send({ status: 'failed', message: "La contraseña debe tener al menos 8 caracteres" });
   }
 
   try {
@@ -130,19 +165,17 @@ router.post('/createUser', async (req, res) => {
 
     // Crear el usuario
     const user = new Users({
-      username,
-      email,
-      sexo,
+      username: xss(username),  // Sanitizar el username
+      email: xss(email),  // Sanitizar el email
+      sexo: xss(sexo),  // Sanitizar el sexo
       anyo_nacimiento,
-      pais,
-      origin,
+      pais: xss(pais),  // Sanitizar el pais
+      origin: xss(origin),  // Sanitizar el origen
       password: hashedPassword,
       siguiendo: [username]
     });
 
     await user.save();
-
-
     res.status(200).send({ status: 'success', message: "Usuario creado correctamente" });
   } catch (error) {
     console.error(error);
@@ -150,12 +183,28 @@ router.post('/createUser', async (req, res) => {
   }
 });
 
+// Crear un nuevo usuario con Google
 router.post('/createUserGoogle', async (req, res) => {
-  const {username, email, sexo, anyo_nacimiento, pais, password, origin, fotoPerfil} = req.body;
+  const { username, email, sexo, anyo_nacimiento, pais, password, origin, fotoPerfil } = req.body;
 
   // Validaciones básicas
   if (!email || !password || !username || !sexo || !anyo_nacimiento || !pais || !origin) {
     return res.status(400).send({ status: 'failed', message: "Todos campos deben ser completados" });
+  }
+
+  // Validar formato del email
+  if (!validator.isEmail(email)) {
+    return res.status(400).send({ status: 'failed', message: "El email no es válido" });
+  }
+
+  // Validar longitud del username (máximo 30 caracteres)
+  if (username.length > 30) {
+    return res.status(400).send({ status: 'failed', message: "El nombre de usuario no puede exceder los 30 caracteres" });
+  }
+
+  // Validar longitud de la contraseña (mínimo 8 caracteres)
+  if (password.length < 8) {
+    return res.status(400).send({ status: 'failed', message: "La contraseña debe tener al menos 8 caracteres" });
   }
 
   try {
@@ -170,20 +219,18 @@ router.post('/createUserGoogle', async (req, res) => {
 
     // Crear el usuario
     const user = new Users({
-      username,
-      email,
-      sexo,
+      username: xss(username),  // Sanitizar el username
+      email: xss(email),  // Sanitizar el email
+      sexo: xss(sexo),  // Sanitizar el sexo
       anyo_nacimiento,
-      pais,
-      origin,
+      pais: xss(pais),  // Sanitizar el pais
+      origin: xss(origin),  // Sanitizar el origen
       password: hashedPassword,
       siguiendo: [username],
-      fotoPerfil
+      fotoPerfil: fotoPerfil ? validator.isURL(fotoPerfil) ? fotoPerfil : null : null  // Validar URL de la foto de perfil
     });
 
     await user.save();
-
-
     res.status(200).send({ status: 'success', message: "Usuario creado correctamente" });
   } catch (error) {
     console.error(error);
@@ -191,7 +238,7 @@ router.post('/createUserGoogle', async (req, res) => {
   }
 });
 
-// Endpoint de Login (email o username)
+// Login del usuario
 router.post('/login', async (req, res) => {
   console.log("Voy a iniciar sesion");
   const { emailOrUsername, password } = req.body;
@@ -204,13 +251,7 @@ router.post('/login', async (req, res) => {
   try {
     // Busca al usuario por su email o username
     const user = await Users.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
-    //POner el campo sesion activa a true
     if (!user) {
-      return res.status(400).send({ status: 'failed', token: "" });
-    }
-
-    //SI el usuario no es nativo, no puede iniciar sesion
-    if (user.origin != "app") {
       return res.status(400).send({ status: 'failed', token: "" });
     }
 
@@ -239,25 +280,20 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Login con Google
 router.post('/loginGoogle', async (req, res) => {
   console.log("Voy a iniciar sesion con google");
   const { emailOrUsername } = req.body;
 
   // Verifica si ambos campos están presentes
   if (!emailOrUsername) {
-    return res.status(400).send('Por favor, proporciona email o username y contraseña');
+    return res.status(400).send('Por favor, proporciona email o username');
   }
 
   try {
     // Busca al usuario por su email o username
     const user = await Users.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
-    //POner el campo sesion activa a true
     if (!user) {
-      return res.status(400).send({ status: 'failed', token: "" });
-    }
-
-    //SI el usuario no es nativo, no puede iniciar sesion
-    if (user.origin == "app") {
       return res.status(400).send({ status: 'failed', token: "" });
     }
 
@@ -279,6 +315,7 @@ router.post('/loginGoogle', async (req, res) => {
     return res.status(500).send({ status: 'failed', token: "" });
   }
 });
+
 
 router.post('/cerrarSesion', async (req, res) => {
   const { emailOrUsername } = req.body;
