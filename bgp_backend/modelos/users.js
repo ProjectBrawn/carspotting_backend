@@ -20,11 +20,11 @@ const userSchema = new mongoose.Schema({
     },
     descripcion: { 
         type: String, 
-        default: '' 
+        default: 'Apasionado del motor usando GTSpotters!' 
     },
     fotoPerfil: { 
         type: String, 
-        default: 'https://i.etsystatic.com/35372836/r/il/70df1f/5861902788/il_fullxfull.5861902788_odt2.jpg' 
+        default: 'https://i.ibb.co/TxGYdq50/profile-Pic.webp' 
     },
     sexo: {
         type: String,
