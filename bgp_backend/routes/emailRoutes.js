@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
 
 router.post('/sendWelcomeEmail', async (req, res) => {
     const { email, username } = req.body;
-    console.log(email);
 
     //Generar un codigo aleatorio de 6 digitos
     const code = Math.floor(100000 + Math.random() * 900000);

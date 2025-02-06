@@ -18,7 +18,6 @@ router.get('/', autenticarToken, async (req, res) => {
 
 router.get('/:username', autenticarToken, async (req, res) => {
   const user = await Users.findOne({ $or: [{ username: req.params.username }, { email: req.params.username }] });
-  console.log(user);
   if (!user) {
     return res.status(404).send('Usuario no encontrado');
   } else {
@@ -30,9 +29,6 @@ router.get('/:username', autenticarToken, async (req, res) => {
 // Actualizar info de un usuario
 router.put('/:username', autenticarToken, async (req, res) => {
   const { username: newUsername, descripcion, imageUrl } = req.body;
-
-  console.log("Voy a actualizar a un usuario");
-  console.log(req.params.username);
 
   try {
     // Buscar el usuario por el parámetro de ruta

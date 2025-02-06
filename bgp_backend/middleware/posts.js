@@ -60,7 +60,7 @@ async function getCityAndCountry(lat, lon) {
             // Extraemos la ciudad y el país del campo "display_name"
             const parts = displayName.split(',');
             const country = parts[parts.length - 1]?.trim() || null;
-            const city = parts[parts.length - 3]?.trim() || null;
+            const city = parts[parts.length - 4]?.trim() || null;
 
             return { city, country };
         } else {

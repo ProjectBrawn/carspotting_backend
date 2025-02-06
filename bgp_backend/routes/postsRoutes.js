@@ -108,9 +108,7 @@ router.post('/addComment', autenticarToken, async (req, res) => {
 
 
 router.get('/:id/comments', autenticarToken, async (req, res) => {
-    console.log("la llammooooo")
     try {
-        console.log("dentroooo")
 
         // Validar que el ID es un ObjectId válido
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -119,8 +117,6 @@ router.get('/:id/comments', autenticarToken, async (req, res) => {
 
         // Buscar el post por su ID
         const post = await Posts.findById(req.params.id);
-        console.log("el postt")
-        console.log(post)
         if (!post) {
             return res.status(404).send('Post no encontrado');
         }

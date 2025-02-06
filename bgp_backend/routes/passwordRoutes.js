@@ -44,7 +44,6 @@ router.get('/getEmail', async (req, res) => {
 
 router.post('/sendEmail', async (req, res) => {
     const { email } = req.body;
-    console.log(email);
 
     //Generar un codigo aleatorio de 6 digitos
     const code = Math.floor(100000 + Math.random() * 900000);
@@ -169,7 +168,6 @@ router.post('/sendEmail', async (req, res) => {
 
 router.post('/sendConfirmationEmail', async (req, res) => {
     const { email } = req.body;
-    console.log(email);
 
     // Configurar el transporte de correo
     const transporter = nodemailer.createTransport({
