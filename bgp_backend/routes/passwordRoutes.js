@@ -61,7 +61,7 @@ router.post('/sendEmail', async (req, res) => {
     // Opciones del correo
     const mailOptions = {
         from: 'projectbrawn@gmail.com',
-        to: "sergiohrn99@gmail.com",
+        to: email,
         subject: '¡Ey, olvidaste tu contraseña?',
         html: `
             <html>
@@ -181,7 +181,7 @@ router.post('/sendConfirmationEmail', async (req, res) => {
     // Opciones del correo
     const mailOptions = {
         from: 'projectbrawn@gmail.com',
-        to: "sergiohrn99@gmail.com",
+        to: email,
         subject: '¡Tu contraseña ha sido actualizada con éxito!',
         html: `
             <html>

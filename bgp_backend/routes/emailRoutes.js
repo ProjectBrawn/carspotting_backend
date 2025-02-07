@@ -24,7 +24,7 @@ router.post('/sendWelcomeEmail', async (req, res) => {
     // Opciones del correo
     const mailOptions = {
         from: 'projectbrawn@gmail.com',
-        to: "sergiohrn99@gmail.com",
+        to: email,
         subject: '¡Bienvenido a GTSpotters!',
         html: `
             <html>
