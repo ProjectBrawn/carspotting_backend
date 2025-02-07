@@ -37,7 +37,7 @@ router.get('/:id', autenticarToken, async (req, res) => {
 });
 
 
-// Obtiene el feed de coches de amigos del usuario actual
+// Obtiene todos los coches, no solo los del amigo 
 router.get('/', autenticarToken, async (req, res) => {
     try {
         const fechaLimite = new Date(); // Hora actual

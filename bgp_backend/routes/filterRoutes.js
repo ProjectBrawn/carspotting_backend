@@ -3,9 +3,8 @@ const express = require('express');
 const router = express.Router();
 const Token = require('../modelos/token');
 const Posts = require('../modelos/posts');
-const {obtenerTodosCoches } = require('../middleware/posts');
+const { obtenerTodosCoches } = require('../middleware/posts');
 const sanitizeHtml = require('sanitize-html'); // Para limpiar entradas HTML
-
 
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
 
@@ -78,10 +77,12 @@ router.get('/', autenticarToken, async (req, res) => {
 
 // Función auxiliar para limpiar entradas maliciosas
 function sanitizeInput(input) {
-    return input.replace(/[\$<>]/g, ''); // Elimina caracteres especiales que puedan usarse para inyecciones
+    // Normalizar la cadena: eliminar tildes y convertir a minúsculas
+    return input
+        .normalize('NFD') // Descomponer caracteres acentuados
+        .replace(/[\u0300-\u036f]/g, '') // Eliminar marcas de acento
+        .toLowerCase() // Convertir a minúsculas
+        .replace(/[\$<>]/g, ''); // Eliminar caracteres especiales que puedan usarse para inyecciones
 }
 
-  
-
 module.exports = router;
-
