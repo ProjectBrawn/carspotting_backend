@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema({
         required: true 
     },
     anyo: { 
-        type: Number, 
+        type: String, 
         required: true 
     },
     generacion: { 
@@ -57,6 +57,10 @@ const postSchema = new mongoose.Schema({
     fecha_captura: {
         type: Date,
         default: Date.now
+    },
+    urlLogo: {
+        type: String,
+        default: ''
     }
 });
 

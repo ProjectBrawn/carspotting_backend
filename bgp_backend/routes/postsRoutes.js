@@ -4,6 +4,7 @@ const router = express.Router();
 const Token = require('../modelos/token');
 const Posts = require('../modelos/posts');
 const Users = require('../modelos/users');
+const Logos = require('../modelos/carLogos');
 const Medalla = require('../modelos/achievements.js');
 const xss = require('xss');  // Para sanitizar entradas de texto
 
@@ -187,6 +188,21 @@ router.post('/postCars', autenticarToken, async (req, res) => {
         // Sanitizar imageUrl para prevenir XSS, incluso si es una URL.
         const sanitizedImageUrl = xss(imageUrl);
 
+        // Obtener el logo de la marca del coche
+        const urlLogo = await Logos.findOne({
+            $or: [
+                { marca: { $regex: '.*' + sanitizedMarca + '.*', $options: 'i' } },
+                { marca: { $regex: sanitizedMarca, $options: 'i' } }
+            ]
+        }).select('urlLogo');
+        let urlInsertar = urlLogo['urlLogo'];
+        if (!urlInsertar) {
+            urlInsertar = 'https://i.ibb.co/cKY6KzqR/logo-2.png';
+        }
+
+        
+
+
         // Crear un objeto con los datos del coche
         const coche = {
             marca: sanitizedMarca,
@@ -196,7 +212,8 @@ router.post('/postCars', autenticarToken, async (req, res) => {
             nacionalidad: sanitizedNacionalidad,
             ubicacion: localizacion,
             username: sanitizedUsername,
-            imagen: sanitizedImageUrl
+            imagen: sanitizedImageUrl,
+            urlLogo: urlInsertar
         };
 
         // Llamar a la función para asignar medallas

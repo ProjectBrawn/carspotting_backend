@@ -175,7 +175,8 @@ async function seedDatabase() {
                         usuario: usuarios[1].username,
                         texto: '¡Qué máquina!'
                     }
-                ]
+                ],
+                urlLogo: "https://i.ibb.co/n7bN76H/toyota.png"
             },
             {
                 marca: 'Nissan',
@@ -196,7 +197,9 @@ async function seedDatabase() {
                         usuario: usuarios[0].username,
                         texto: 'Legendario!'
                     }
-                ]
+                ],
+                urlLogo: "https://i.ibb.co/Q9HvssS/nissan.png"
+
             },
             {
                 marca: 'Mazda',
@@ -216,7 +219,9 @@ async function seedDatabase() {
                         usuario: usuarios[0].username,
                         texto: 'Motor rotativo increíble'
                     }
-                ]
+                ],
+                urlLogo: "https://i.ibb.co/PQ7mqr9/mazda.png"
+
             },
 
             {
@@ -237,7 +242,9 @@ async function seedDatabase() {
                         usuario: usuarios[2].username,
                         texto: '¡Increíble diseño!'
                     }
-                ]
+                ],
+                urlLogo: "https://i.ibb.co/TYSCCC0/porsche.png"
+
             },
 
             {
@@ -254,7 +261,9 @@ async function seedDatabase() {
                 imagen: 'https://img.remediosdigitales.com/47c725/mclaren-f1-senna-9/1366_2000.jpg',
                 username: usuarios[1].username,
                 comentarios: [
-                ]
+                ],
+                urlLogo: "https://i.ibb.co/YQrJc3R/mclaren.png"
+
             },
             {
                 marca: 'Lamborghini',
@@ -275,7 +284,9 @@ async function seedDatabase() {
                         usuario: usuarios[1].username,
                         texto: '¡Qué máquina!'
                     }
-                ]
+                ],
+                urlLogo: "https://i.ibb.co/JKxPjvB/lamborghini.png"
+
             },
         ]);
 

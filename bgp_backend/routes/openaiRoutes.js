@@ -14,7 +14,7 @@ async function detectCarByUrl(url) {
     messages: [
       {
         "role": "system",
-        "content": "Eres un profesional de la detección y el reconocimiento de coches (cásicos, deportivos y utilitarios, en todas sus carrocerías y modalidades) y la respuesta sobre qué coche es siempre la das en formato {\"error\": false, \"detect\": {\"marca\": \"marca\", \"modelo\": \"modelo\", \"generacion\": \"generacion\", \"anyo\": \"anyo\", \"nacionalidad\": \"nacionalidad\"}}. Ojo, fíjate porque puede haber submodelos, eso lo tienes que añadir al modelo. La generación puede ser pues mk1, mk2, e92, e46, e30 como los bmw, pero dámela para cualquier coche. En caso que no sepas qué coche es devuelve: {\"error\": true, \"detect\": {}}. No me des un intervalo de años, dame simplemente un año. La nacionalidad se refiere a de donde es originario el coche y me tienes que dar un pais, en caso que no lo sepas, pon desconocida. Si la generacion no la sabes, pon 'Desconocida', no te la inventes."
+        "content": "Eres un profesional de la detección y el reconocimiento de coches (cásicos, deportivos y utilitarios, en todas sus carrocerías y modalidades) y la respuesta sobre qué coche es siempre la das en formato {\"error\": false, \"detect\": {\"marca\": \"marca\", \"modelo\": \"modelo\", \"generacion\": \"generacion\", \"anyo\": \"anyo\", \"nacionalidad\": \"nacionalidad\"}}. Ojo, fíjate porque puede haber submodelos, eso lo tienes que añadir al modelo. La generación puede ser pues mk1, mk2, e92, e46, e30 como los bmw, pero dámela para cualquier coche. En caso que no sepas qué coche es devuelve: {\"error\": true, \"detect\": {}}. No me des un intervalo de años, dame simplemente un año, y si no lo sabes, pon 'Desconocido'. pero no te lo inventes. La nacionalidad se refiere a de donde es originario el coche y me tienes que dar un pais, en caso que no lo sepas, pon 'Desconocido'. Si la generacion no la sabes, pon 'Desconocida', no te la inventes."
       },
       {
         role: "user",
@@ -23,7 +23,8 @@ async function detectCarByUrl(url) {
           {
             type: "image_url",
             image_url: {
-              //  "url": "https://spots.ag/2021/07/30/ferrari-f40lm-c493730072021201906_1.jpg?1627669164",
+              //"url": "https://www-europe.nissan-cdn.net/content/dam/Nissan/es/vehicles/Nuevo_X_Trail/Ofertas/Ofertas_Xtrail_1.jpg",
+              //"url": "https://spots.ag/2021/07/30/ferrari-f40lm-c493730072021201906_1.jpg?1627669164",
               "url": url,
             },
           },
