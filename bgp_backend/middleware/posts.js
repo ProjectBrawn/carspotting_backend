@@ -20,8 +20,6 @@ async function obtenerTodosCoches(fechaLimite = null) {
             // Agregamos la condición al query para el rango de fechas
             //quitar el menos 7  para una semana
             const fechaInicio = new Date(fechaLimiteDate.getTime() - 7*24 * 60 * 60 * 1000);
-            console.log('Fecha de inicio:', fechaInicio);
-            console.log('Fecha límite:', fechaLimiteDate);
 
             query.fecha_captura = { 
                 $gte: fechaInicio, // Fecha mínima: 24 horas antes

@@ -66,6 +66,9 @@ const userSchema = new mongoose.Schema({
     seguidores: [{
         type: String,
     }],
+    bloqueados: [{
+        type: String,
+    }],
     sesion_activa: {
         type: Boolean,
         default: false
