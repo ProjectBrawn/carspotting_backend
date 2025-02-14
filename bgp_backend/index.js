@@ -15,6 +15,7 @@ const emailRoutes = require('./routes/emailRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const blockRoutes = require('./routes/blockRoutes');
 const unblockRoutes = require('./routes/unblockRoutes');
+const reportUserRoutes = require('./routes/reportUserRoutes');
 
 //const carLogosRoutes = require('./routes/carLogosRoutes');
 
@@ -40,6 +41,7 @@ app.use('/detectCar', openaiRoutes);
 app.use('/password', passwordRoutes);
 app.use('/email', emailRoutes);
 app.use('/report', reportRoutes);
+app.use('/reportUser', reportUserRoutes);
 app.use('/blockUser', blockRoutes);
 app.use('/unblockUser', unblockRoutes);
 
