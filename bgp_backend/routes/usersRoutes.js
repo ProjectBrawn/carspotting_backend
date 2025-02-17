@@ -130,7 +130,7 @@ router.post('/createUser', async (req, res) => {
   const { username, email, sexo, anyo_nacimiento, pais, password, origin } = req.body;
 
   // Validaciones básicas
-  if (!email || !password || !username || !sexo || !anyo_nacimiento || !pais || !origin) {
+  if (!email || !password || !username  || !origin) {
     return res.status(400).send({ status: 'failed', message: "Todos campos deben ser completados" });
   }
 
@@ -184,7 +184,7 @@ router.post('/createUserGoogle', async (req, res) => {
   const { username, email, sexo, anyo_nacimiento, pais, password, origin, fotoPerfil } = req.body;
 
   // Validaciones básicas
-  if (!email || !password || !username || !sexo || !anyo_nacimiento || !pais || !origin) {
+  if (!email || !password || !username || !origin) {
     return res.status(400).send({ status: 'failed', message: "Todos campos deben ser completados" });
   }
 
