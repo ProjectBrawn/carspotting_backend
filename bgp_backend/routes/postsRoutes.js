@@ -151,7 +151,7 @@ router.post('/postCars', autenticarToken, async (req, res) => {
         }
 
         // Validar y sanitizar el contenido
-        const sanitizedMarca = xss(marca);
+        var sanitizedMarca = xss(marca);
         const sanitizedModelo = xss(modelo);
         const sanitizedNacionalidad = xss(nacionalidad);
         const sanitizedGeneracion = xss(generacion);
@@ -187,6 +187,9 @@ router.post('/postCars', autenticarToken, async (req, res) => {
 
         // Sanitizar imageUrl para prevenir XSS, incluso si es una URL.
         const sanitizedImageUrl = xss(imageUrl);
+        //Reemplazamos los guiones por espacios
+        sanitizedMarca = sanitizedMarca.replace(/-/g, ' ');
+        console.log(sanitizedMarca);
 
         // Obtener el logo de la marca del coche
         const urlLogo = await Logos.findOne({
@@ -195,6 +198,8 @@ router.post('/postCars', autenticarToken, async (req, res) => {
                 { marca: { $regex: sanitizedMarca, $options: 'i' } }
             ]
         }).select('urlLogo');
+
+        console.log(urlLogo);
         let urlInsertar = urlLogo['urlLogo'];
         if (!urlInsertar) {
             urlInsertar = 'https://i.ibb.co/cKY6KzqR/logo-2.png';
