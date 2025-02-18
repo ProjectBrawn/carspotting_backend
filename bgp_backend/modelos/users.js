@@ -28,15 +28,15 @@ const userSchema = new mongoose.Schema({
     },
     sexo: {
         type: String,
-        required: true,
+        required: false,
     },
     anyo_nacimiento: {
         type: String,
-        required: true,
+        required: false,
     },
     pais: {
         type: String,
-        required: true,
+        required: false,
     },
     puntos_experiencia: { 
         type: Number, 
