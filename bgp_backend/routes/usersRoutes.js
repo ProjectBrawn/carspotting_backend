@@ -234,6 +234,44 @@ router.post('/createUserGoogle', async (req, res) => {
   }
 });
 
+router.post('/createUserApple', async (req, res) => {
+  const { username, email, isPrivateEmail, sexo, anyo_nacimiento, pais, origin, fotoPerfil } = req.body;
+
+  // Validaciones básicas
+  if (!email || !username || !origin) {
+    return res.status(400).send({ status: 'failed', message: "Todos los campos obligatorios deben ser completados" });
+  }
+
+  try {
+    // Verificar si el email o el username ya existen en la base de datos
+    const existingUser = await Users.findOne({ $or: [{ username }] });
+    if (existingUser) {
+      return res.status(400).send({ status: 'failed', message: "El email o el username ya están en uso" });
+    }
+
+    // Generar un password aleatorio para la cuenta Apple (no es usado directamente por el usuario)
+    const randomPassword = crypto.randomBytes(16).toString('hex');
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+    // Crear el usuario
+    const user = new Users({
+      username: xss(username),  // Sanitizar el username
+      email: email,
+      origin: xss(origin),
+      password: hashedPassword,
+      siguiendo: [username],
+      fotoPerfil: fotoPerfil ? (validator.isURL(fotoPerfil) ? fotoPerfil : null) : null // Validar URL de la foto de perfil
+    });
+
+    await user.save();
+    res.status(200).send({ status: 'success', message: "Usuario creado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 'failed', message: "Error al crear usuario" });
+  }
+});
+
+
 // Login del usuario
 router.post('/login', async (req, res) => {
   console.log("Voy a iniciar sesion");
