@@ -5,6 +5,7 @@ const Users = require('../modelos/users');
 const Token = require('../modelos/token');
 const Posts = require('../modelos/posts');
 const Report = require('../modelos/report');
+const crypto = require('crypto'); // Agregar esta línea
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
@@ -265,6 +266,7 @@ router.post('/createUserApple', async (req, res) => {
 
     await user.save();
     res.status(200).send({ status: 'success', message: "Usuario creado correctamente" });
+    
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 'failed', message: "Error al crear usuario" });
