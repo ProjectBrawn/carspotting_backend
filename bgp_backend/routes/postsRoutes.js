@@ -190,23 +190,21 @@ router.post('/postCars', autenticarToken, async (req, res) => {
         //Reemplazamos los guiones por espacios
         sanitizedMarca = sanitizedMarca.replace(/-/g, ' ');
         console.log(sanitizedMarca);
-
+        
+        var urlLogo = {}
         // Obtener el logo de la marca del coche
-        const urlLogo = await Logos.findOne({
-            $or: [
-                { marca: { $regex: '.*' + sanitizedMarca + '.*', $options: 'i' } },
-                { marca: { $regex: sanitizedMarca, $options: 'i' } }
-            ]
-        }).select('urlLogo');
-
-        console.log(urlLogo);
-        let urlInsertar = urlLogo['urlLogo'];
-        if (!urlInsertar) {
-            urlInsertar = 'https://i.ibb.co/cKY6KzqR/logo-2.png';
+        try{
+            urlLogo = await Logos.findOne({
+                $or: [
+                    { marca: { $regex: '.*' + sanitizedMarca + '.*', $options: 'i' } },
+                    { marca: { $regex: sanitizedMarca, $options: 'i' } }
+                ]
+            }).select('urlLogo');
+        } catch (error) {
+            urlLogo = { urlLogo: 'https://i.ibb.co/cKY6KzqR/logo-2.png' };
         }
 
-        
-
+        let urlInsertar = urlLogo?.urlLogo || 'https://i.ibb.co/cKY6KzqR/logo-2.png';
 
         // Crear un objeto con los datos del coche
         const coche = {
