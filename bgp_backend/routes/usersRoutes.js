@@ -273,6 +273,40 @@ router.post('/createUserApple', async (req, res) => {
   }
 });
 
+router.post('/loginApple', async (req, res) => {
+  console.log("Voy a iniciar sesion con Apple");
+  const { emailOrUsername } = req.body;
+
+  // Verifica si ambos campos están presentes
+  if (!emailOrUsername) {
+    return res.status(400).send('Por favor, proporciona email o username');
+  }
+
+  try {
+    // Busca al usuario por su email o username
+    const user = await Users.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
+    if (!user) {
+      return res.status(400).send({ status: 'failed', token: "" });
+    }
+
+    // Genera un token JWT si las credenciales son correctas
+    const token = jwt.sign({ userId: user._id, username: user.username }, "pruebas");
+
+    // Guarda el token en el esquema de Token
+    const tokenDocument = new Token({
+      token,
+      userId: user._id,
+    });
+
+    await tokenDocument.save();
+    user.sesion_activa = true;
+    await user.save();
+    res.status(200).send({ status: 'success', token, username: user.username });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ status: 'failed', token: "" });
+  }
+});
 
 // Login del usuario
 router.post('/login', async (req, res) => {

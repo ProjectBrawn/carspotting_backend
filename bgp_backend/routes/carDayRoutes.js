@@ -21,6 +21,7 @@ router.get('/', autenticarToken, async (req, res) => {
 
         // Encuentra el coche correspondiente al índice
         const carOfTheDay = await CarDay.findOne().skip(carIndex);
+        console.log(carOfTheDay)
         if (carOfTheDay) {
             // Responde con la información del coche del día
             res.json({
