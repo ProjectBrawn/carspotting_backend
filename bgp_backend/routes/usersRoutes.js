@@ -11,6 +11,43 @@ const jwt = require('jsonwebtoken');
 const { autenticarToken, SECRET_KEY } = require('../middleware/auth');
 const validator = require('validator');
 const xss = require('xss');
+require("dotenv").config();
+const admin = require("firebase-admin");
+
+//Creamos el JSON de serviceAccount
+const serviceAccount = {
+  type: process.env.TYPE,
+  project_id: process.env.PROJECT_ID,
+  private_key_id: process.env.PRIVATE_KEY_ID,
+  private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+  client_email: process.env.CLIENT_EMAIL,
+  client_id: process.env.CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  token_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: process.env.CLIENT_X509_CERT_URL,
+  universe_domain: process.env.UNIVERSE_DOMAIN,
+}
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+async function eliminarUsuarioFirebase(email) {
+  try {
+    // Buscar el usuario por email
+    const user = await admin.auth().getUserByEmail(email);
+
+    // Eliminar el usuario
+    await admin.auth().deleteUser(user.uid);
+    console.log(`Usuario con email ${email} eliminado correctamente.`);
+    
+    return true;
+  } catch (error) {
+    console.error("Error eliminando usuario:", error);
+    return false;
+  }
+}
 
 router.get('/', autenticarToken, async (req, res) => {
   const users = await Users.find();
@@ -413,7 +450,14 @@ router.post('/cerrarSesion', async (req, res) => {
 
 // Elimina un usuario específico por username 
 router.delete('/deleteUser/:username', autenticarToken, async (req, res) => {
-  await Users.findByIdAndDelete(req.params.username);
+  console.log("voy a eliminar el usuario");
+  console.log(req.params.username);
+  //Cojo el email del usuario previamente antes encontrado con id
+  const user = await Users.findById(req.params.username);
+  print(user);
+  console.log(user.email);
+  //await Users.findByIdAndDelete(req.params.username);
+
   res.send('Usuario eliminado');
 });
 
@@ -644,6 +688,12 @@ router.delete('/deleteUser', autenticarToken, async (req, res) => {
     // Eliminar al usuario
     await Users.findByIdAndDelete(userId);
 
+    const email = usuario.email;
+    console.log("el email es: " + email);
+    if (usuario.origin == 'apple' || usuario.origin == 'google') {
+      console.log("Es de google o apple, lo elimino de firebase");
+      await eliminarUsuarioFirebase(email);
+    }
     return res.status(200).json({ message: 'Usuario y referencias eliminados correctamente' });
   } catch (error) {
     console.error('Error al eliminar el usuario:', error);
